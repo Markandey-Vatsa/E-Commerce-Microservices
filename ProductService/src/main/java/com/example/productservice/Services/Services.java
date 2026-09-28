@@ -13,11 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 public class Services {
-
-
     private final ProductRepository productRepository;
-
-
     public boolean createProduct(Product product) {
         productRepository.save(product);
         return true;

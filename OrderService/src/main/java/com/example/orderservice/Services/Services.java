@@ -20,7 +20,7 @@ public class Services {
     private final OrderRepository orderRepository;
     private final RestClient restClient;
 
-    public boolean createOrder(Order order){
+    public boolean createOrder(Order order,String authorizationHeader){
 
         // 1. Call Product Service
         // 2. If stock update succeeds
@@ -29,8 +29,10 @@ public class Services {
         StockUpdateRequest request = new StockUpdateRequest();
         request.setQuantity(order.getQuantity());
 
+
         BigDecimal price = restClient.post()
                 .uri("/products/reduceStock/{id}", order.getProdId())
+                .header("Authorization",authorizationHeader)
                 .body(request)
                 .retrieve()
                 .body(BigDecimal.class);

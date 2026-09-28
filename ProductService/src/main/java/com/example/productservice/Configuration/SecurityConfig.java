@@ -28,7 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/products/deleteProduct").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/products/updateProduct").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/products/getProduct/**").authenticated()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(
                         jwtAuthenticationFilter,
