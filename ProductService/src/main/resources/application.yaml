@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ProductService
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  public-key: ${JWT_PUBLIC_KEY}
+
+server:
+  port: 8082
