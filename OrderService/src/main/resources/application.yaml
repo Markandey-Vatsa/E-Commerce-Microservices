@@ -16,4 +16,4 @@ jwt:
   public-key: ${JWT_PUBLIC_KEY}
 
 server:
-  port: 8081
+  port: 8082

@@ -29,6 +29,8 @@ public class Services {
         StockUpdateRequest request = new StockUpdateRequest();
         request.setQuantity(order.getQuantity());
 
+        System.out.println(order.getProdId());
+
 
         BigDecimal price = restClient.post()
                 .uri("/products/reduceStock/{id}", order.getProdId())
