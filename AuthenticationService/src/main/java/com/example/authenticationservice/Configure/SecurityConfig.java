@@ -33,7 +33,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod. POST,"/auth/createAdmin").hasRole("ADMIN")
-                                .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                         )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -70,5 +70,7 @@ public class SecurityConfig {
 
         return source;
     }
+
+
 
 }
