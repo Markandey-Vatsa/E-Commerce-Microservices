@@ -93,6 +93,7 @@ public class Services {
 
         // 4. Generate JWT containing username + role
         return jwtUtil.generateToken(
+                user.getId(),
                 user.getUsername(),
                 role
         );
