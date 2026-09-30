@@ -1,0 +1,40 @@
+{
+  "info": {
+    "_postman_id": "ab29fbf4-a503-4caa-95ab-5480f106e55e",
+    "name": "Product Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41482597",
+    "_collection_link": "https://go.postman.co/collection/41482597-ab29fbf4-a503-4caa-95ab-5480f106e55e?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create Product",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"name\": \"Mechanical Keyboard\",\r\n  \"description\": \"RGB mechanical keyboard with blue switches\",\r\n  \"price\": 1799.50,\r\n  \"stock\": 30\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8082/products/createProduct",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8082",
+          "path": [
+            "products",
+            "createProduct"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

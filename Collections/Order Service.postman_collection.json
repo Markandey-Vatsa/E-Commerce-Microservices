@@ -1,0 +1,39 @@
+{
+  "info": {
+    "_postman_id": "8db53c35-3b32-43f5-bcd7-50874ebee7d2",
+    "name": "Order Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "41482597"
+  },
+  "item": [
+    {
+      "name": "Create Order",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": 6,\r\n  \"productId\": 1,\r\n  \"quantity\": 2,\r\n  \"deliveryAddressDTO\": {\r\n    \"houseNumber\": \"42\",\r\n    \"street\": \"MG Road\",\r\n    \"city\": \"Amaravati\",\r\n    \"state\": \"Andhra Pradesh\",\r\n    \"postalCode\": \"522503\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/orders/createOrder",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "orders",
+            "createOrder"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
