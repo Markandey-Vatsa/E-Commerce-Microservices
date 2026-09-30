@@ -1,8 +1,10 @@
 package com.example.deliveryservice.Entity;
 import jakarta.persistence.*;
+import lombok.Data;
 
+@Data
 @Entity
-public class DeliveryPartner {
+public class DeliveryPartners {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +16,7 @@ public class DeliveryPartner {
 
     private String phone;
 
-    private Integer pinCode;
+    private String pinCode;
 
     @Enumerated(EnumType.STRING)
     private PartnerStatus status;

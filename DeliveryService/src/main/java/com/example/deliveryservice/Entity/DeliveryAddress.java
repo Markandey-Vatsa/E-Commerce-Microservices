@@ -1,11 +1,15 @@
 package com.example.deliveryservice.Entity;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.Data;
 
 
 @Data
-@Embeddable
+@Entity
 public class DeliveryAddress {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Long userId;
     private String houseNumber;
     private String street;
     private String city;

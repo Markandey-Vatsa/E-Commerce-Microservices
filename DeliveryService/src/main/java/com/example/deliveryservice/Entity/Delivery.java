@@ -13,8 +13,11 @@ public class Delivery {
     private Long id;
     private Long orderId;
     private Long customerId;
-    @Embedded
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
     private DeliveryAddress deliveryAddress;
+
     private Long deliveryPartnerId;
     private String trackingNumber;
     @Enumerated(EnumType.STRING)
