@@ -1,4 +1,5 @@
 package com.example.orderservice.Controller;
+import com.example.orderservice.DTO.OrderRequestDTO;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Services.Services;
 import jakarta.servlet.http.HttpServlet;
@@ -18,7 +19,7 @@ public class OrderController {
     private final Services services;
 
     @PostMapping("/createOrder")
-    public ResponseEntity<?> createOrder(@RequestBody Order order, HttpServletRequest request){
+    public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order, HttpServletRequest request){
 
         String authorizationHeader = request.getHeader("Authorization");
         boolean created =  services.createOrder(order,authorizationHeader);

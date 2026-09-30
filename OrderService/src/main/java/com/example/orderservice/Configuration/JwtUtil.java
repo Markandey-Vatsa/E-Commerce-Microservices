@@ -24,6 +24,11 @@ public class JwtUtil {
                 .getPayload();
     }
 
+    public Long getUserIdFromToken(String token) {
+        Claims claims = extractClaims(token);
+        return Long.parseLong((String) claims.get("userId"));
+    }
+
     public String extractUsername(String token) {
         return extractClaims(token).getSubject();
     }

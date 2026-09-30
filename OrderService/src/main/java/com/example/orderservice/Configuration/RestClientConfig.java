@@ -7,9 +7,16 @@ import org.springframework.web.client.RestClient;
 public class RestClientConfig {
 
     @Bean
-    public RestClient restClient() {
+    public RestClient productRestClient() {
         return RestClient.builder()
-                .baseUrl("http://localhost:8083")
+                .baseUrl("http://localhost:8080")
+                .build();
+    }
+
+    @Bean
+    public RestClient deliveryRestClient() {
+        return RestClient.builder()
+                .baseUrl("http://localhost:8084")
                 .build();
     }
 }
