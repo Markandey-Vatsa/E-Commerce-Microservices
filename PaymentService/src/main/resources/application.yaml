@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: PaymentService
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+razorpay:
+  key-id: ${RAZORPAY_API_KEY}
+  key-secret: ${RAZORPAY_KEY_SECRET}
+
+server:
+  port: 8085
