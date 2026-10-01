@@ -1,4 +1,5 @@
 package com.example.orderservice.Controller;
+import com.example.orderservice.DTO.CheckoutDetailsDTO;
 import com.example.orderservice.DTO.OrderRequestDTO;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Services.Services;
@@ -20,13 +21,27 @@ public class OrderController {
 
     @PostMapping("/createOrder")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order, HttpServletRequest request){
-
         String authorizationHeader = request.getHeader("Authorization");
-        boolean created =  services.createOrder(order,authorizationHeader);
-        if(!created){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        CheckoutDetailsDTO dto =  services.createOrder(order,authorizationHeader);
+
+//     it will create order (call product service to reduce stock), then payment.
+//        Payment service will give it checkout info, which it will sent to frontend.
+//        then frontend will call checkout link of razorpay.
+//        then frontend will hit verify API of payment service to check if payment done.
+//        After that -> frontend will call another controller of this service to make delivery.-> sending order ID
+
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @PostMapping("/make-delivery/{orderId}")
+    public ResponseEntity<?> makeDelivery(@PathVariable Long orderId, HttpServletRequest request){
+    String authorizationHeader = request.getHeader("Authorization");
+    boolean delivery_created = services.confirmAndDeliverOrder(orderId,authorizationHeader);
+    if(delivery_created){
+        return new ResponseEntity<>("Shipment has been created",HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
     }
 
     @GetMapping("/getOrder/{id}")

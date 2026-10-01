@@ -19,4 +19,11 @@ public class RestClientConfig {
                 .baseUrl("http://localhost:8084")
                 .build();
     }
+
+    @Bean
+    public RestClient paymentServiceClient(){
+        return RestClient.builder()
+                .baseUrl("http://localhost:8085")
+                .build();
+    }
 }

@@ -29,4 +29,10 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.PLACED;
+
+    private String houseNumber;
+    private String street;
+    private String city;
+    private String state;
+    private String postalCode;
 }

@@ -1,9 +1,8 @@
 package com.example.orderservice.Services;
 
-import com.example.orderservice.DTO.DeliveryTransferDTO;
-import com.example.orderservice.DTO.OrderRequestDTO;
-import com.example.orderservice.DTO.StockUpdateRequest;
+import com.example.orderservice.DTO.*;
 import com.example.orderservice.Entity.Order;
+import com.example.orderservice.Entity.Status;
 import com.example.orderservice.GlobalExceptionalHandler.OrderNotFoundException;
 import com.example.orderservice.Repository.OrderRepository;
 import lombok.NoArgsConstructor;
@@ -25,11 +24,16 @@ public class Services {
     private final OrderRepository orderRepository;
     private final RestClient productRestClient;
     private final RestClient deliveryRestClient;
+    private final RestClient paymentServiceRestClient;
 
-    Services(OrderRepository orderRepository, @Qualifier("productRestClient") RestClient productRestClient, @Qualifier("deliveryRestClient") RestClient deliveryRestClient) {
+    Services(OrderRepository orderRepository,
+             @Qualifier("productRestClient") RestClient productRestClient,
+             @Qualifier("deliveryRestClient") RestClient deliveryRestClient,
+             @Qualifier("paymentServiceClient") RestClient paymentServiceRestClient) {
         this.orderRepository = orderRepository;
         this.productRestClient = productRestClient;
         this.deliveryRestClient = deliveryRestClient;
+        this.paymentServiceRestClient = paymentServiceRestClient;
     }
 
 
@@ -39,11 +43,16 @@ public class Services {
         order.setProdId(orderRequestDTO.getProductId());
         order.setQuantity(orderRequestDTO.getQuantity());
         order.setUserId(orderRequestDTO.getUserId());
+        order.setHouseNumber(orderRequestDTO.getDeliveryAddressDTO().getHouseNumber());
+        order.setStreet(orderRequestDTO.getDeliveryAddressDTO().getStreet());
+        order.setCity(orderRequestDTO.getDeliveryAddressDTO().getCity());
+        order.setState(orderRequestDTO.getDeliveryAddressDTO().getState());
+        order.setPostalCode(orderRequestDTO.getDeliveryAddressDTO().getPostalCode());
         return order;
     }
 
 
-    public boolean createOrder(OrderRequestDTO orderDTO, String authorizationHeader){
+    public CheckoutDetailsDTO createOrder(OrderRequestDTO orderDTO, String authorizationHeader){
 
         // 1. Call Product Service
         // 2. If stock update succeeds
@@ -68,9 +77,27 @@ public class Services {
 
         orderRepository.save(order);
 
-//        TODO: CREATE DELIVERY TRANSFER DTO AND SEND TO DELIVERY SERVICE -> DONE
+        //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order.
+        CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
+                .uri("/payments/create/{orderId}",order.getOrderId())
+                .body(order.getPrice())
+                .retrieve()
+                .body(CheckoutDetailsDTO.class);
 
-        DeliveryTransferDTO deliveryTransferDTO = getDeliveryTransferDTO(orderDTO,order);
+       return checkoutDetailsDTO;
+    }
+
+
+    public boolean confirmAndDeliverOrder(
+            Long orderId,
+            String authorizationHeader) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() ->
+                        new RuntimeException("Order not found"));
+
+        DeliveryTransferDTO deliveryTransferDTO =
+                getDeliveryTransferDTO(order);
 
         HttpStatusCode status = deliveryRestClient.post()
                 .uri("/createShipment")
@@ -80,21 +107,29 @@ public class Services {
                 .toBodilessEntity()
                 .getStatusCode();
 
-        if (status != HttpStatus.CREATED) {
-            return false;
-        }
+         if(status == HttpStatus.CREATED){
+             order.setStatus(Status.CONFIRMED);
+             orderRepository.save(order);
+             return true;
+         }
 
-        return true;
-
+         return false;
     }
 
 
-    private DeliveryTransferDTO getDeliveryTransferDTO(OrderRequestDTO orderRequestDTO,Order order){
-        DeliveryTransferDTO deliveryTransferDTO = new DeliveryTransferDTO();
-        deliveryTransferDTO.setDeliveryAddress(orderRequestDTO.getDeliveryAddressDTO());
-        deliveryTransferDTO.setUserId(order.getUserId());
-        deliveryTransferDTO.setOrderId(order.getOrderId());
-        return deliveryTransferDTO;
+    private DeliveryTransferDTO getDeliveryTransferDTO(Order order){
+        DeliveryTransferDTO dto = new DeliveryTransferDTO();
+        DeliveryAddressDTO address = new DeliveryAddressDTO();
+        address.setCity(order.getCity());
+        address.setHouseNumber(order.getHouseNumber());
+        address.setPostalCode(order.getPostalCode());
+        address.setState(order.getState());
+        address.setStreet(order.getStreet());
+        dto.setDeliveryAddress(address);
+        dto.setUserId(order.getUserId());
+        dto.setOrderId(order.getOrderId());
+        return dto;
+
     }
 
     public Order getOrder(Long id) {
