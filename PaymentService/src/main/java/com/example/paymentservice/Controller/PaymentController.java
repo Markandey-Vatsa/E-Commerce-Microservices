@@ -2,7 +2,6 @@ package com.example.paymentservice.Controller;
 import com.example.paymentservice.DTO.PaymentVerificationRequest;
 import com.example.paymentservice.DTO.PaymentOrderResponse;
 import com.example.paymentservice.Services.PaymentService;
-import com.razorpay.RazorpayException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,24 +23,16 @@ public class PaymentController {
             @PathVariable Long orderId,
             @RequestBody BigDecimal amount) {
 
-        try {
-
             PaymentOrderResponse response =
-                    paymentService.createRazorpayOrder(amount, orderId);
+                    paymentService.createPaymentOrder(amount, orderId);
             return ResponseEntity.ok(response);
 
-        } catch (RazorpayException e) {
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Payment creation failed"+e.getMessage());
-        }
     }
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(
             @RequestBody PaymentVerificationRequest request) {
-        try {
+
             boolean verified =
                     paymentService.verifyPayment(request);
             if (verified) {
@@ -50,18 +41,11 @@ public class PaymentController {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body("Payment verification failed");
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Payment verification error");
-        }
     }
 
 
 
-//    TODO: RECEIVE THE RESPONSE FROM RAZORPAY WEBHOOK FOR PAYMENT VERIFICATION
+//    TODO: RECEIVE THE RESPONSE FROM RAZORPAY WEBHOOK FOR PAYMENT VERIFICATION -> CURRENTLY VERIFYING FROM FRONTEND RESPONSE.
 //    FIRST CHECK IF WE RECEIVE WEBHOOK RESPONSE
 @PostMapping("/webhook")
 public ResponseEntity<?> handleWebhook(
