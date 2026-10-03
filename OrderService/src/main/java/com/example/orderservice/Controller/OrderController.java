@@ -1,7 +1,9 @@
 package com.example.orderservice.Controller;
 import com.example.orderservice.DTO.CheckoutDetailsDTO;
 import com.example.orderservice.DTO.OrderRequestDTO;
+import com.example.orderservice.DTO.OrderResponse;
 import com.example.orderservice.Entity.Order;
+import com.example.orderservice.Entity.Status;
 import com.example.orderservice.Services.Services;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -22,19 +25,24 @@ public class OrderController {
     @PostMapping("/createOrder")
     public ResponseEntity<?> createOrder(@RequestBody OrderRequestDTO order, HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
-        CheckoutDetailsDTO dto =  services.createOrder(order,authorizationHeader);
+        OrderResponse orderResponse =  services.createOrder(order,authorizationHeader);
+        if(!orderResponse.isSuccess()) return new ResponseEntity<>(orderResponse,HttpStatus.CONFLICT);
+        return new ResponseEntity<>(orderResponse, HttpStatus.OK);
+    }
 
-//     it will create order (call product service to reduce stock), then payment.
-//        Payment service will give it checkout info, which it will sent to frontend.
-//        then frontend will call checkout link of razorpay.
-//        then frontend will hit verify API of payment service to check if payment done.
-//        After that -> frontend will call another controller of this service to make delivery.-> sending order ID
-
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+    @PostMapping("/make-payment/{orderId}")
+    public ResponseEntity<?> makePayment(@PathVariable UUID orderId){
+        CheckoutDetailsDTO checkoutDetailsDTO = services.createPayment(orderId);
+        return new ResponseEntity<>(checkoutDetailsDTO,HttpStatus.OK);
+    }
+//    ONCE PAYMENT IS VERIFIED, THAT FUNCTION WILL CALL THIS CONTROLLER TO CHANGE THE STATUS OF ORDER FROM PAYMENT_PENDING -> CONFIRM
+    @PostMapping("/orderStatusConfirm")
+    public void orderStatusConfirm(@RequestBody UUID orderId){
+        boolean setStatus = services.changeOrderStatus(Status.CONFIRMED,orderId);
     }
 
     @PostMapping("/make-delivery/{orderId}")
-    public ResponseEntity<?> makeDelivery(@PathVariable Long orderId, HttpServletRequest request){
+    public ResponseEntity<?> makeDelivery(@PathVariable UUID orderId, HttpServletRequest request){
     String authorizationHeader = request.getHeader("Authorization");
     boolean delivery_created = services.confirmAndDeliverOrder(orderId,authorizationHeader);
     if(delivery_created){
@@ -45,19 +53,19 @@ public class OrderController {
     }
 
     @GetMapping("/getOrder/{id}")
-    public ResponseEntity<?> getOrderById(@PathVariable Long id){
+    public ResponseEntity<?> getOrderById(@PathVariable UUID id){
         Order order = services.getOrder(id);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
     @GetMapping("/my-order/{user_id}")
-    public ResponseEntity<?> getMyOrder(@PathVariable Long user_id){
+    public ResponseEntity<?> getMyOrder(@PathVariable UUID user_id){
         List<Order> orderList = services.getOrdersByUserId(user_id);
         return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
 
     @DeleteMapping("/deleteOrder/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable Long id){
+    public ResponseEntity<?> deleteOrder(@PathVariable UUID id){
         services.deleteOrderById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -15,6 +15,7 @@ import org.springframework.web.client.RestClient;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import static io.jsonwebtoken.Jwts.header;
 
@@ -52,44 +53,70 @@ public class Services {
     }
 
 
-    public CheckoutDetailsDTO createOrder(OrderRequestDTO orderDTO, String authorizationHeader){
+    public OrderResponse createOrder(OrderRequestDTO orderDTO, String authorizationHeader){
 
-        // 1. Call Product Service
-        // 2. If stock update succeeds
-        // 3. Save order
         Order order = orderFromOrderRequestDTO(orderDTO);
-        StockUpdateRequest request = new StockUpdateRequest();
+        order.setOrderId(UUID.randomUUID());
+        StockReservationRequest request = new StockReservationRequest();
         request.setQuantity(order.getQuantity());
+        request.setOrderId(order.getOrderId());
+        request.setProductId(order.getProdId());
 
-//        System.out.println(order.getProdId());
 
-
-        BigDecimal price = productRestClient.post()
-                .uri("/products/reduceStock/{id}", order.getProdId())
+        StockReservationResponse response = productRestClient.post()
+                .uri("/products/reserveStock")
                 .header("Authorization",authorizationHeader)
                 .body(request)
                 .retrieve()
-                .body(BigDecimal.class);
+                .body(StockReservationResponse.class);
 
-        order.setPrice(price.multiply(
+        OrderResponse orderResponse = new OrderResponse();
+
+        if(!response.isSuccess()){
+            orderResponse.setMessage(response.getMessage());
+            orderResponse.setSuccess(response.isSuccess());
+            orderResponse.setOrderId(order.getOrderId());
+            return orderResponse;
+        }
+
+        order.setReservationId(response.getReservationId());
+        order.setPrice(response.getUnitPrice().multiply(
                 BigDecimal.valueOf(order.getQuantity())
         ));
 
+        order.setStatus(Status.PENDING_PAYMENT);
         orderRepository.save(order);
+        orderResponse.setMessage(response.getMessage());
+        orderResponse.setSuccess(response.isSuccess());
+        orderResponse.setOrderId(order.getOrderId());
+        return orderResponse;
+    }
 
+    public CheckoutDetailsDTO createPayment(UUID orderId){
         //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order.
+       Order order = orderRepository.findById(orderId).orElse(null);
+       if(order == null) throw new OrderNotFoundException("Order Not Found");
+
         CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
                 .uri("/payments/create/{orderId}",order.getOrderId())
                 .body(order.getPrice())
                 .retrieve()
                 .body(CheckoutDetailsDTO.class);
+        return checkoutDetailsDTO;
+    }
 
-       return checkoutDetailsDTO;
+    public boolean changeOrderStatus(Status status,UUID orderId){
+        Order order = orderRepository.findById(orderId).orElse(null);
+        if(order == null) throw new OrderNotFoundException("Order Not Found");
+        order.setStatus(status);
+        orderRepository.save(order);
+        return true;
     }
 
 
+
     public boolean confirmAndDeliverOrder(
-            Long orderId,
+            UUID orderId,
             String authorizationHeader) {
 
         Order order = orderRepository.findById(orderId)
@@ -129,20 +156,19 @@ public class Services {
         dto.setUserId(order.getUserId());
         dto.setOrderId(order.getOrderId());
         return dto;
-
     }
 
-    public Order getOrder(Long id) {
+    public Order getOrder(UUID id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
     }
 
-    public List<Order> getOrdersByUserId(Long userId){
+    public List<Order> getOrdersByUserId(UUID userId){
         List<Order> orderList = orderRepository.findByUserId(userId);
         return orderList;
     }
 
-    public void deleteOrderById(Long orderId){
+    public void deleteOrderById(UUID orderId){
         Order order = getOrder(orderId);
         if(order != null) {
             orderRepository.delete(order);

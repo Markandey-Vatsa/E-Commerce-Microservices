@@ -1,7 +1,7 @@
 package com.example.orderservice.Entity;
 
 public enum Status {
-    PLACED,
+    PENDING_PAYMENT,
     CONFIRMED,
     DISPATCHED,
     DELIVERED,

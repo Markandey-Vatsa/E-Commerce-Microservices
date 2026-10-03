@@ -9,7 +9,7 @@ public class RestClientConfig {
     @Bean
     public RestClient productRestClient() {
         return RestClient.builder()
-                .baseUrl("http://localhost:8080")
+                .baseUrl("http://localhost:8083")
                 .build();
     }
 

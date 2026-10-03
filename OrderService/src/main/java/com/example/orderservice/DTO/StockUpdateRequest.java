@@ -1,8 +1,8 @@
-package com.example.orderservice.DTO;
-import lombok.Data;
-
-@Data
-public class StockUpdateRequest {
-
-    private Integer quantity;
-}
+//package com.example.orderservice.DTO;
+//import lombok.Data;
+//
+//@Data
+//public class StockUpdateRequest {
+//
+//    private Integer quantity;
+//}
