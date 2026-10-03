@@ -1,11 +1,8 @@
 package com.example.productservice.Services;
-
 import com.example.productservice.DTO.StockReservationRequest;
 import com.example.productservice.DTO.StockReservationResponse;
-import com.example.productservice.DTO.StockUpdateRequest;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Entity.ReservedProductStock;
-import com.example.productservice.GlobalExceptionalHandler.InsufficientStockException;
 import com.example.productservice.GlobalExceptionalHandler.ProductNotFoundException;
 import com.example.productservice.GlobalExceptionalHandler.ReservationNotFouncException;
 import com.example.productservice.Repository.ProductRepository;
@@ -14,9 +11,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -53,25 +50,6 @@ public class Services {
         productRepository.deleteById(id);
         return true;
     }
-
-
-//    public Product reduceStock(Long productId, StockUpdateRequest quantity) {
-//
-//        Product product = productRepository.findById(productId)
-//                .orElseThrow(() ->
-//                        new RuntimeException("Product not found"));
-//
-//        if (product.getStock() < quantity.getQuantity()) {
-//            throw new RuntimeException("Insufficient stock");
-//        }
-//
-//        product.setStock(product.getStock() - quantity.getQuantity());
-//
-//        productRepository.save(product);
-//
-//        return product;
-//    }
-
 
     @Transactional
     public StockReservationResponse reserveStock(StockReservationRequest request){
@@ -110,7 +88,8 @@ public class Services {
 
 
     @Transactional
-    public void releaseStock(Long reservationId) {
+    public void releaseStock(UUID orderId) {
+        Long reservationId = reservedStockRepository.findByOrderId(orderId); // one reservation is associated to one order, hence both unique Ids for a row.
         ReservedProductStock reservation =
                 reservedStockRepository.findById(reservationId)
                         .orElseThrow(() ->

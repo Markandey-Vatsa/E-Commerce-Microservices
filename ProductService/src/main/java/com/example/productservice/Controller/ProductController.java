@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 
 @RequiredArgsConstructor
@@ -85,9 +86,9 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/releaseStock/{reservationId}")
-    public ResponseEntity<?> releaseStock(@PathVariable Long reservationId) {
-        services.releaseStock(reservationId);
+    @PostMapping("/releaseStock/{orderId}")
+    public ResponseEntity<?> releaseStock(@PathVariable UUID orderId) {
+        services.releaseStock(orderId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

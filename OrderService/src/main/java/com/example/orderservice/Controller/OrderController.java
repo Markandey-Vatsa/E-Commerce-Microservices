@@ -5,7 +5,6 @@ import com.example.orderservice.DTO.OrderResponse;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.Status;
 import com.example.orderservice.Services.Services;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ public class OrderController {
 //    ONCE PAYMENT IS VERIFIED, THAT FUNCTION WILL CALL THIS CONTROLLER TO CHANGE THE STATUS OF ORDER FROM PAYMENT_PENDING -> CONFIRM
     @PostMapping("/orderStatusConfirm")
     public void orderStatusConfirm(@RequestBody UUID orderId){
-        boolean setStatus = services.changeOrderStatus(Status.CONFIRMED,orderId);
+        boolean status = services.changeOrderStatus(Status.CONFIRMED,orderId);
     }
 
     @PostMapping("/make-delivery/{orderId}")
