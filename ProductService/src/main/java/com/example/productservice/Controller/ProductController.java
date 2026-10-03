@@ -1,12 +1,16 @@
 package com.example.productservice.Controller;
 
 
+import com.example.productservice.DTO.StockReservationRequest;
+import com.example.productservice.DTO.StockReservationResponse;
 import com.example.productservice.DTO.StockUpdateRequest;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Services.Services;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,11 +67,29 @@ public class ProductController {
 
 
 //    -----------------REDUCE STOCK-----------------
-   @PostMapping("/reduceStock/{id}")
-    public ResponseEntity<?> reduceStock(@PathVariable Long id, @RequestBody StockUpdateRequest quantity){
-        Product product = services.reduceStock(id,quantity);
-        return new ResponseEntity<>(product.getPrice(),HttpStatus.OK);
-   }
+//   @PostMapping("/reduceStock/{id}")
+//    public ResponseEntity<?> reduceStock(@PathVariable Long id, @RequestBody StockUpdateRequest quantity){
+//        Product product = services.reduceStock(id,quantity);
+//        return new ResponseEntity<>(product.getPrice(),HttpStatus.OK);
+//   }
+
+    @PostMapping("/reserveStock")
+    public ResponseEntity<StockReservationResponse> reserveStock(
+            @Valid @RequestBody StockReservationRequest request) {
+        StockReservationResponse response = services.reserveStock(request);
+        if (!response.isSuccess()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(response);
+        }
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/releaseStock/{reservationId}")
+    public ResponseEntity<?> releaseStock(@PathVariable Long reservationId) {
+        services.releaseStock(reservationId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 
 }
