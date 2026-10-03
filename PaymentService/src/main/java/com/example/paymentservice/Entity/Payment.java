@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -17,7 +18,7 @@ public class Payment {
     private Long id;
 
     @Column(nullable = false)
-    private Long orderId;
+    private UUID orderId;
 
     @Column(nullable = false, unique = true)
     private String razorpayOrderId;

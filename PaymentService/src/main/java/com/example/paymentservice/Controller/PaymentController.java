@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 //@CrossOrigin(origins = "*")
 @RestController
@@ -20,7 +21,7 @@ public class PaymentController {
 
     @PostMapping("/create/{orderId}")
     public ResponseEntity<?> createPayment(
-            @PathVariable Long orderId,
+            @PathVariable UUID orderId,
             @RequestBody BigDecimal amount) {
 
             PaymentOrderResponse response =

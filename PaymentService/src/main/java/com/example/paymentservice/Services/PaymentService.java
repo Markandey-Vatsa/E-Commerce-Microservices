@@ -11,10 +11,15 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.razorpay.Utils;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class PaymentService implements PaymentServiceInterface {
@@ -25,16 +30,19 @@ public class PaymentService implements PaymentServiceInterface {
 
     private final RazorpayClient razorpayClient;
     private final PaymentRepository paymentRepository;
+    @Qualifier("orderRestClient")
+    private RestClient orderRestClient;
 
-    public PaymentService(RazorpayClient razorpayClient,PaymentRepository paymentRepository) {
+    public PaymentService(RazorpayClient razorpayClient,PaymentRepository paymentRepository, @Qualifier("orderRestClient") RestClient orderRestClient) {
         this.razorpayClient = razorpayClient;
         this.paymentRepository = paymentRepository;
+        this.orderRestClient = orderRestClient;
     }
 
     @Override
     public PaymentOrderResponse createPaymentOrder(
             BigDecimal amount,
-            Long orderId) {
+            UUID orderId) {
         JSONObject options = new JSONObject();
         options.put(
                 "amount",
@@ -122,6 +130,14 @@ public class PaymentService implements PaymentServiceInterface {
         payment.setStatus(PaymentStatus.SUCCESS);
         payment.setPaymentDate(LocalDateTime.now());
         paymentRepository.save(payment);
+        if(payment.getStatus().equals(PaymentStatus.SUCCESS)){
+            UUID orderId = payment.getOrderId();
+            orderRestClient.post()
+                    .uri("/orders/orderStatusConfirm")
+                    .body(orderId)
+                    .retrieve()
+                    .toBodilessEntity();
+        }
 
         return true;
     }
