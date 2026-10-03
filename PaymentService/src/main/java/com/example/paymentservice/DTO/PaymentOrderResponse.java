@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class PaymentOrderResponse {
-
     private String razorpayOrderId;
     private BigDecimal amount;
     private String currency;

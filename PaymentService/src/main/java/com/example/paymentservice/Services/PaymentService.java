@@ -32,11 +32,16 @@ public class PaymentService implements PaymentServiceInterface {
     private final PaymentRepository paymentRepository;
     @Qualifier("orderRestClient")
     private RestClient orderRestClient;
+    @Qualifier("productRestClient")
+    private RestClient productRestClient;
 
-    public PaymentService(RazorpayClient razorpayClient,PaymentRepository paymentRepository, @Qualifier("orderRestClient") RestClient orderRestClient) {
+    public PaymentService(RazorpayClient razorpayClient,PaymentRepository paymentRepository,
+                          @Qualifier("orderRestClient") RestClient orderRestClient,
+                          @Qualifier("productRestClient") RestClient productRestClient) {
         this.razorpayClient = razorpayClient;
         this.paymentRepository = paymentRepository;
         this.orderRestClient = orderRestClient;
+        this.productRestClient = productRestClient;
     }
 
     @Override
@@ -106,10 +111,6 @@ public class PaymentService implements PaymentServiceInterface {
             throw new PaymentException("Your payment verification failed.",e);
         }
 
-        if (!verified) {
-            return false;
-        }
-
         // Find our payment record
         Payment payment =
                 paymentRepository
@@ -122,6 +123,18 @@ public class PaymentService implements PaymentServiceInterface {
                                 )
                         );
 
+        if (!verified) {
+            payment.setStatus(PaymentStatus.FAILED);
+            payment.setPaymentDate(LocalDateTime.now());
+            paymentRepository.save(payment);
+            productRestClient.post()
+                    .uri("/products/releaseStock/{orderId}",payment.getOrderId())
+                    .retrieve()
+                    .toBodilessEntity();
+            return false;
+        }
+
+
         // Update payment
         payment.setRazorpayPaymentId(
                 request.getRazorpayPaymentId()
@@ -131,6 +144,7 @@ public class PaymentService implements PaymentServiceInterface {
         payment.setPaymentDate(LocalDateTime.now());
         paymentRepository.save(payment);
         if(payment.getStatus().equals(PaymentStatus.SUCCESS)){
+//            API REQUEST TO CHANGE ORDER STATUS TO CONFIRM AFTER PAYMENT VERIFICATION
             UUID orderId = payment.getOrderId();
             orderRestClient.post()
                     .uri("/orders/orderStatusConfirm")
