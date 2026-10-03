@@ -2,7 +2,7 @@ package com.example.deliveryservice.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 
 
 @Data
@@ -11,7 +11,7 @@ public class Delivery {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long orderId;
+    private UUID orderId;
     private Long customerId;
 
     @OneToOne(cascade = CascadeType.ALL)
