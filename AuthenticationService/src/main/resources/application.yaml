@@ -1,6 +1,8 @@
 spring:
   application:
     name: AuthenticationService
+  kafka:
+    bootstrap-servers: localhost:9092
 
   datasource:
     url: ${DB_URL}
