@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: NotificationService
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    consumer:
+      group-id: notification-service
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: com.example.notificationservice.EventsPojo
+        spring.json.type.mapping: com.example.authenticationservice.Kafka.UserRegisteredEvent:com.example.notificationservice.EventsPojo.UserRegisteredEvent

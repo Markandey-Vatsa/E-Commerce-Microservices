@@ -1,4 +1,6 @@
 package com.example.notificationservice.Repository;
+import com.example.notificationservice.Entity.UserContactInfo;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public class UserContactDetailsRepository {
+public interface UserContactDetailsRepository extends JpaRepository<UserContactInfo,Long> {
 }
