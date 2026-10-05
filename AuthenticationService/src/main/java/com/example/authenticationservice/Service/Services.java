@@ -5,6 +5,8 @@ import com.example.authenticationservice.Entity.PasswordResetOTP;
 import com.example.authenticationservice.Entity.Role;
 import com.example.authenticationservice.Entity.User;
 import com.example.authenticationservice.GlobalExceptionHandler.RoleNotAllowedException;
+import com.example.authenticationservice.Kafka.KafkaProducer;
+import com.example.authenticationservice.Kafka.UserRegisteredEvent;
 import com.example.authenticationservice.Repository.UserOtpRepository;
 import com.example.authenticationservice.Repository.UserRepository;
 import com.example.authenticationservice.Utils.JwtUtil;
@@ -32,6 +34,7 @@ public class Services {
     private final JwtUtil jwtUtil;
     private final UserOtpRepository userOtpRepository;
     private final JavaMailSender javaMailSender;
+    private final KafkaProducer kafkaProducer;
 
     public void registerUser(User user) throws RuntimeException {
 
@@ -53,8 +56,13 @@ public class Services {
         user1.setRole(user.getRole());
         user1.setUsername(user.getUsername());
         user1.setPassword(passwordEncoder.encode(user.getPassword()));
+        user1.setFirstName(user.getFirstName());
+        user1.setLastName(user.getLastName());
 
-        userRepository.save(user1);
+        User savedUser = userRepository.save(user1);
+        UserRegisteredEvent sendUser = new UserRegisteredEvent(savedUser.getId(),savedUser.getUsername(),savedUser.getFirstName(),savedUser.getLastName());
+
+        kafkaProducer.sendUserRegisteredEvent(sendUser);
     }
 
     public void createAdmin(User user) {
