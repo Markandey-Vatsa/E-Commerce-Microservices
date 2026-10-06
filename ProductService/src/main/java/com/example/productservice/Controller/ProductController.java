@@ -6,10 +6,12 @@ import com.example.productservice.DTO.StockReservationResponse;
 import com.example.productservice.DTO.StockUpdateRequest;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Services.Services;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +27,10 @@ public class ProductController {
     private final Services services;
 
     @PostMapping("/createProduct")
-    public ResponseEntity<?> createProduct(@RequestBody Product product) {
-        boolean created = services.createProduct(product);
+    public ResponseEntity<?> createProduct(@RequestBody Product product,  Authentication authentication) {
+
+
+        boolean created = services.createProduct(product,authentication);
 
         if(created){
             return new ResponseEntity<>(HttpStatus.CREATED);
@@ -48,17 +52,26 @@ public class ProductController {
     }
 
     @PutMapping("/updateProduct")
-    public ResponseEntity<?> updateProduct(@RequestBody Product product) {
-        boolean updated = services.updateProduct(product);
-        if(updated){
-            return new ResponseEntity<>("Product details updated !",HttpStatus.OK);
+    public ResponseEntity<?> updateProduct(
+            @RequestBody Product product,
+            Authentication authentication) {
+
+        boolean updated =
+                services.updateProduct(product, authentication);
+
+        if (updated) {
+            return new ResponseEntity<>(
+                    "Product details updated!",
+                    HttpStatus.OK
+            );
         }
+
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/deleteProduct")
-    public ResponseEntity<?> deleteProduct(@RequestBody Product product) {
-        boolean deleted = services.deleteProduct(product.getId());
+    @DeleteMapping("/deleteProduct/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id,Authentication authentication) {
+        boolean deleted = services.deleteProduct(id,authentication);
 
         if(deleted){
             return new ResponseEntity<>("Product details deleted",HttpStatus.OK);
@@ -90,6 +103,13 @@ public class ProductController {
     public ResponseEntity<?> releaseStock(@PathVariable UUID orderId) {
         services.releaseStock(orderId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+//    Seller's own products
+    @GetMapping("/my-products")
+    public ResponseEntity<?> getMyProducts(Authentication authentication) {
+        List<Product> list = services.getMyProducts(authentication);
+        return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
 

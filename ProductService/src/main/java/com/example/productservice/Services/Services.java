@@ -10,6 +10,8 @@ import com.example.productservice.Repository.ReservedStockRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +23,9 @@ import java.util.UUID;
 public class Services {
     private final ProductRepository productRepository;
     private final ReservedStockRepository reservedStockRepository;
-    public boolean createProduct(Product product) {
+    public boolean createProduct(Product product, Authentication authentication) {
+        String sellerEmail= authentication.getName();
+        product.setSellerEmail(sellerEmail);
         productRepository.save(product);
         return true;
     }
@@ -34,20 +38,57 @@ public class Services {
         return productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found"));
     }
 
-    public boolean updateProduct(Product product){
-        Product product1 = productRepository.findById(product.getId()).orElseThrow(()->new ProductNotFoundException("Product not found"));
-        product1.setName(product.getName());
-        product1.setDescription(product.getDescription());
-        product1.setPrice(product.getPrice());
-        product.setStock(product.getStock());
-        productRepository.save(product1);
+    public boolean updateProduct(
+            Product product,
+            Authentication authentication) {
+
+        Product existingProduct = productRepository.findById(product.getId())
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found"));
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        String sellerEmail = authentication.getName();
+
+        if (!isAdmin && !existingProduct.getSellerEmail().equals(sellerEmail)) {
+            throw new AccessDeniedException(
+                    "You cannot modify this product"
+            );
+        }
+
+        existingProduct.setName(product.getName());
+        existingProduct.setDescription(product.getDescription());
+        existingProduct.setPrice(product.getPrice());
+        existingProduct.setStock(product.getStock());
+
+        productRepository.save(existingProduct);
+
         return true;
     }
 
 
-    public boolean deleteProduct(Long id){
-        Product product1 = productRepository.findById(id).orElseThrow(()->new ProductNotFoundException("Product not found"));
-        productRepository.deleteById(id);
+    public boolean deleteProduct(
+            Long id,
+            Authentication authentication) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found"));
+
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        String sellerEmail = authentication.getName();
+
+        if (!isAdmin && !product.getSellerEmail().equals(sellerEmail)) {
+            throw new AccessDeniedException(
+                    "You cannot delete this product"
+            );
+        }
+
+        productRepository.delete(product);
+
         return true;
     }
 
@@ -126,6 +167,12 @@ public class Services {
         }
     }
 
+
+    public List<Product> getMyProducts(Authentication authentication){
+        String email = authentication.getName();
+        List<Product> products = productRepository.findBySellerEmail(email);
+        return products;
+    }
 
 
 
