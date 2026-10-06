@@ -2,6 +2,8 @@ package com.example.paymentservice.Controller;
 import com.example.paymentservice.DTO.PaymentVerificationRequest;
 import com.example.paymentservice.DTO.PaymentOrderResponse;
 import com.example.paymentservice.Services.PaymentService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +34,12 @@ public class PaymentController {
 
     @PostMapping("/verify")
     public ResponseEntity<?> verifyPayment(
-            @RequestBody PaymentVerificationRequest request) {
+            @RequestBody PaymentVerificationRequest request, HttpServletRequest req) {
+
+        String authorizationHeader = req.getHeader("Authorization");
 
             boolean verified =
-                    paymentService.verifyPayment(request);
+                    paymentService.verifyPayment(request,authorizationHeader);
             if (verified) {
                 return ResponseEntity.ok("Payment verified successfully");
             }

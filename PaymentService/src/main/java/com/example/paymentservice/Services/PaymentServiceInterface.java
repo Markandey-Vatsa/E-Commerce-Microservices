@@ -6,5 +6,5 @@ import java.util.UUID;
 
 public interface PaymentServiceInterface {
      PaymentOrderResponse createPaymentOrder(BigDecimal amount, UUID orderId);
-     boolean verifyPayment(PaymentVerificationRequest request);
+     boolean verifyPayment(PaymentVerificationRequest request,String authorizationHeader);
 }

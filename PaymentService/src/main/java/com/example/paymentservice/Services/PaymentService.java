@@ -13,10 +13,8 @@ import com.razorpay.Utils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -79,11 +77,11 @@ public class PaymentService implements PaymentServiceInterface {
     }
 
 
-
     // 2. VERIFY PAYMENT
     @Override
     public boolean verifyPayment(
-            PaymentVerificationRequest request) {
+            PaymentVerificationRequest request,
+            String authorizationHeader) {
         JSONObject options = new JSONObject();
         options.put(
                 "razorpay_order_id",
@@ -129,6 +127,7 @@ public class PaymentService implements PaymentServiceInterface {
             paymentRepository.save(payment);
             productRestClient.post()
                     .uri("/products/releaseStock/{orderId}",payment.getOrderId())
+                    .header("Authorization", authorizationHeader)
                     .retrieve()
                     .toBodilessEntity();
             return false;
@@ -143,15 +142,14 @@ public class PaymentService implements PaymentServiceInterface {
         payment.setStatus(PaymentStatus.SUCCESS);
         payment.setPaymentDate(LocalDateTime.now());
         paymentRepository.save(payment);
-        if(payment.getStatus().equals(PaymentStatus.SUCCESS)){
 //            API REQUEST TO CHANGE ORDER STATUS TO CONFIRM AFTER PAYMENT VERIFICATION
             UUID orderId = payment.getOrderId();
             orderRestClient.post()
                     .uri("/orders/orderStatusConfirm")
+                    .header("Authorization",authorizationHeader)
                     .body(orderId)
                     .retrieve()
                     .toBodilessEntity();
-        }
 
         return true;
     }
