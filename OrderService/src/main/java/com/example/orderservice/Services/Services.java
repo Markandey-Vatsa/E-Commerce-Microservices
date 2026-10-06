@@ -5,19 +5,14 @@ import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.Status;
 import com.example.orderservice.GlobalExceptionalHandler.OrderNotFoundException;
 import com.example.orderservice.Repository.OrderRepository;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-
-import static io.jsonwebtoken.Jwts.header;
 
 
 @Service
@@ -92,25 +87,25 @@ public class Services {
         return orderResponse;
     }
 
-    public CheckoutDetailsDTO createPayment(UUID orderId){
+    public CheckoutDetailsDTO createPayment(UUID orderId,String authorizationHeader){
         //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order.
        Order order = orderRepository.findById(orderId).orElse(null);
        if(order == null) throw new OrderNotFoundException("Order Not Found");
-
         CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
                 .uri("/payments/create/{orderId}",order.getOrderId())
+                .header("Authorization",authorizationHeader)
                 .body(order.getPrice())
                 .retrieve()
                 .body(CheckoutDetailsDTO.class);
         return checkoutDetailsDTO;
     }
 
-    public boolean changeOrderStatus(Status status,UUID orderId){
+    public boolean changeOrderStatusToConfirm(UUID orderId, String authorizationHeader){
         Order order = orderRepository.findById(orderId).orElse(null);
         if(order == null) throw new OrderNotFoundException("Order Not Found");
-        order.setStatus(status);
-        orderRepository.save(order);
-        return true;
+//        order.setStatus(status);
+//        orderRepository.save(order);
+        return confirmAndDeliverOrder(orderId,authorizationHeader);
     }
 
 
@@ -139,7 +134,6 @@ public class Services {
              orderRepository.save(order);
              return true;
          }
-
          return false;
     }
 
@@ -163,7 +157,7 @@ public class Services {
                 .orElseThrow(() -> new OrderNotFoundException("Order not found"));
     }
 
-    public List<Order> getOrdersByUserId(UUID userId){
+    public List<Order> getOrdersByUserId(Long userId){
         List<Order> orderList = orderRepository.findByUserId(userId);
         return orderList;
     }

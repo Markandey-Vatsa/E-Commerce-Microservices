@@ -30,26 +30,22 @@ public class OrderController {
     }
 
     @PostMapping("/make-payment/{orderId}")
-    public ResponseEntity<?> makePayment(@PathVariable UUID orderId){
-        CheckoutDetailsDTO checkoutDetailsDTO = services.createPayment(orderId);
+    public ResponseEntity<?> makePayment(@PathVariable UUID orderId,HttpServletRequest request){
+        String authorizationHeader = request.getHeader("Authorization");
+        CheckoutDetailsDTO checkoutDetailsDTO = services.createPayment(orderId,authorizationHeader);
         return new ResponseEntity<>(checkoutDetailsDTO,HttpStatus.OK);
     }
 //    ONCE PAYMENT IS VERIFIED, THAT FUNCTION WILL CALL THIS CONTROLLER TO CHANGE THE STATUS OF ORDER FROM PAYMENT_PENDING -> CONFIRM
     @PostMapping("/orderStatusConfirm")
-    public void orderStatusConfirm(@RequestBody UUID orderId){
-        boolean status = services.changeOrderStatus(Status.CONFIRMED,orderId);
-    }
-
-    @PostMapping("/make-delivery/{orderId}")
-    public ResponseEntity<?> makeDelivery(@PathVariable UUID orderId, HttpServletRequest request){
-    String authorizationHeader = request.getHeader("Authorization");
-    boolean delivery_created = services.confirmAndDeliverOrder(orderId,authorizationHeader);
-    if(delivery_created){
+    public ResponseEntity<?> orderStatusConfirm(@RequestBody UUID orderId, HttpServletRequest request){
+        String authorizationHeader = request.getHeader("Authorization");
+        boolean status = services.changeOrderStatusToConfirm(orderId,authorizationHeader);
+        if(status){
         return new ResponseEntity<>("Shipment has been created",HttpStatus.OK);
     }
     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
     }
+
 
     @GetMapping("/getOrder/{id}")
     public ResponseEntity<?> getOrderById(@PathVariable UUID id){
@@ -58,7 +54,7 @@ public class OrderController {
     }
 
     @GetMapping("/my-order/{user_id}")
-    public ResponseEntity<?> getMyOrder(@PathVariable UUID user_id){
+    public ResponseEntity<?> getMyOrder(@PathVariable Long user_id){
         List<Order> orderList = services.getOrdersByUserId(user_id);
         return new ResponseEntity<>(orderList, HttpStatus.OK);
     }
