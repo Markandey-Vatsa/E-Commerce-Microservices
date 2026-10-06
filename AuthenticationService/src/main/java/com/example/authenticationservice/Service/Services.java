@@ -66,17 +66,14 @@ public class Services {
     }
 
     public void createAdmin(User user) {
-
         if (user.getUsername().isEmpty()
                 || user.getPassword().isEmpty()
                 || user.getRole() == null) {
 
             throw new NullPointerException("This field can't be empty !");
         }
-
         user.setRole(Role.ADMIN);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         userRepository.save(user);
     }
 
@@ -150,7 +147,7 @@ public class Services {
     }
 
 
-
+    @Transactional
     public boolean verifyOtp(String email, String otp) {
         User user = userRepository.findByUsername(email)
                 .orElse(null);
@@ -168,6 +165,11 @@ public class Services {
             return false;
         }
 
-        return resetOTP.getOtp().equals(otp);
+        if(resetOTP.getOtp().equals(otp)){
+            userOtpRepository.deleteByUser(user);
+            return true;
+        }
+
+        return false;
     }
 }

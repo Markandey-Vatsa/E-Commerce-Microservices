@@ -47,7 +47,7 @@ public class AuthController {
     public ResponseEntity<?> verifyOtp(@RequestParam String email,@RequestParam String otp){
         boolean verify = services.verifyOtp(email,otp);
         if(verify) return new ResponseEntity<>("OTP Verified successfully: ",HttpStatus.OK);
-        return new ResponseEntity<>("Invalid OTP",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Invalid OTP, try again with forgot password.",HttpStatus.BAD_REQUEST);
     }
 
 
