@@ -11,20 +11,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class KafkaConsumer {
-
+    private final EmailServices  emailServices;
     private final UserContactDetailsRepository userContactDetailsRepository;
-
-
     @KafkaListener(
             topics = "user-events",
             groupId = "notification-service"
     )
-    public void consume(UserRegisteredEvent event) {
+    public void consumeUserRegisteredEvent(UserRegisteredEvent event) {
         UserContactInfo userContactInfo = new UserContactInfo();
         userContactInfo.setFirstName(event.getFirstName());
         userContactInfo.setLastName(event.getLastName());
         userContactInfo.setEmail(event.getEmail());
         userContactInfo.setUserId(event.getUserId());
-        userContactDetailsRepository.save(userContactInfo);
+        UserContactInfo user = userContactDetailsRepository.save(userContactInfo);
+        emailServices.userRegistrationMail(user);
     }
 }
