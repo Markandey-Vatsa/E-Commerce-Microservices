@@ -119,7 +119,6 @@ public class Services {
                 "Your password reset OTP is: " + otp +
                         "\n\nThis OTP will expire in 5 minutes."
         );
-
         javaMailSender.send(message);
     }
 
