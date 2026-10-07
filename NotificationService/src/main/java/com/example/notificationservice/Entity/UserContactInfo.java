@@ -15,7 +15,7 @@ public class UserContactInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    Long UserId;
+    Long userId;
     String firstName;
     String lastName;
     String email;

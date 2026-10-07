@@ -7,6 +7,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -18,6 +19,7 @@ spring:
           auth: true
           starttls:
             enable: true
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -35,4 +37,8 @@ spring:
 
       properties:
         spring.json.trusted.packages: com.example.notificationservice.EventsPojo
-        spring.json.type.mapping: com.example.authenticationservice.Kafka.UserRegisteredEvent:com.example.notificationservice.EventsPojo.UserRegisteredEvent
+        spring.json.type.mapping: >
+          com.example.authenticationservice.Kafka.UserRegisteredEvent:com.example.notificationservice.EventsPojo.UserRegisteredEvent,
+          com.example.orderservice.EventsPOJO.NotificationEvent:com.example.notificationservice.EventsPojo.NotificationEvent
+server:
+  port: 8086

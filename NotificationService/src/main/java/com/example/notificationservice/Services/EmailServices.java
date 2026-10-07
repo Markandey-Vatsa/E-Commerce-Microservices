@@ -1,5 +1,6 @@
 package com.example.notificationservice.Services;
 import com.example.notificationservice.Entity.UserContactInfo;
+import com.example.notificationservice.Repository.UserContactDetailsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailServices {
 
+    private final UserContactDetailsRepository userContactDetailsRepository;
     private final JavaMailSender mailSender;
 
     public void sendMail(String to, String subject, String text){
@@ -31,4 +33,15 @@ public class EmailServices {
         sendMail(email, subject, text);
     }
 
+    public void orderCreatedEvent(Long userId){
+        UserContactInfo contactInfo = userContactDetailsRepository.findByUserId(userId);
+        String firstName = contactInfo.getFirstName();
+        String email = contactInfo.getEmail();
+        String topic = "Order created, make the payment !!";
+        String text = "Dear "+firstName + ",\n\n"+
+                "Your order is created, kindly make the payment within 30 mins to continue with the order.\n\n" +
+                "Regards, \n"+
+                "E-Commerce Team";
+        sendMail(email, topic, text);
+    }
 }
