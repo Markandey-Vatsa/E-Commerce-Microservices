@@ -3,7 +3,9 @@ package com.example.orderservice.Services;
 import com.example.orderservice.DTO.*;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.Status;
+import com.example.orderservice.EventsPOJO.NotificationEvent;
 import com.example.orderservice.GlobalExceptionalHandler.OrderNotFoundException;
+import com.example.orderservice.Kafka.KafkaProducer;
 import com.example.orderservice.Repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -21,15 +23,18 @@ public class Services {
     private final RestClient productRestClient;
     private final RestClient deliveryRestClient;
     private final RestClient paymentServiceRestClient;
+    private final KafkaProducer kafkaProducer;
 
     Services(OrderRepository orderRepository,
              @Qualifier("productRestClient") RestClient productRestClient,
              @Qualifier("deliveryRestClient") RestClient deliveryRestClient,
-             @Qualifier("paymentServiceClient") RestClient paymentServiceRestClient) {
+             @Qualifier("paymentServiceClient") RestClient paymentServiceRestClient,
+             KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
         this.productRestClient = productRestClient;
         this.deliveryRestClient = deliveryRestClient;
         this.paymentServiceRestClient = paymentServiceRestClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
 
@@ -84,11 +89,16 @@ public class Services {
         orderResponse.setMessage(response.getMessage());
         orderResponse.setSuccess(response.isSuccess());
         orderResponse.setOrderId(order.getOrderId());
+        NotificationEvent event = new NotificationEvent(
+                "ORDER_CREATED",
+                order.getUserId()
+        );
+        kafkaProducer.sendNotificationEvent(event);
         return orderResponse;
     }
 
     public CheckoutDetailsDTO createPayment(UUID orderId,String authorizationHeader){
-        //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order.
+        //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order. --> DONE
        Order order = orderRepository.findById(orderId).orElse(null);
        if(order == null) throw new OrderNotFoundException("Order Not Found");
         CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
