@@ -1,0 +1,75 @@
+
+services:
+  authentication-service:
+    image: authentication-service:1.0
+    env_file:
+      - ./AuthenticationService/.env
+    ports:
+      - "8081:8081"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  product-service:
+    image: product-service:1.0
+    env_file:
+      - ./ProductService/.env
+    ports:
+      - "8083:8083"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  order-service:
+    image: order-service:1.0
+    env_file:
+      - ./OrderService/.env
+    ports:
+      - "8082:8082"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  delivery-service:
+    image: delivery-service:1.0
+    env_file:
+      - ./DeliveryService/.env
+    ports:
+      - "8084:8084"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  payment-service:
+    image: payment-service:1.0
+    env_file:
+      - ./PaymentService/.env
+    ports:
+      - "8085:8085"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  notification-service:
+    image: notification-service:1.0
+    env_file:
+      - ./NotificationService/.env
+    ports:
+      - "8086:8086"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+  api-gateway:
+    image: api-gateway:1.0
+    ports:
+      - "8080:8080"
+    networks:
+      - microservices-net
+    restart: unless-stopped
+
+networks:
+  microservices-net:
+    external: true
+    name: infrastructure_default
+
