@@ -39,6 +39,7 @@ spring:
         spring.json.trusted.packages: com.example.notificationservice.EventsPojo
         spring.json.type.mapping: >
           com.example.authenticationservice.Kafka.UserRegisteredEvent:com.example.notificationservice.EventsPojo.UserRegisteredEvent,
-          com.example.orderservice.EventsPOJO.NotificationEvent:com.example.notificationservice.EventsPojo.NotificationEvent
+          com.example.orderservice.EventsPOJO.NotificationEvent:com.example.notificationservice.EventsPojo.NotificationEvent,
+          com.example.orderservice.EventsPOJO.PaymentNotification:com.example.notificationservice.EventsPojo.PaymentNotification
 server:
   port: 8086
