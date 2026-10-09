@@ -4,6 +4,7 @@ import com.example.orderservice.DTO.*;
 import com.example.orderservice.Entity.Order;
 import com.example.orderservice.Entity.Status;
 import com.example.orderservice.EventsPOJO.NotificationEvent;
+import com.example.orderservice.EventsPOJO.PaymentNotification;
 import com.example.orderservice.GlobalExceptionalHandler.OrderNotFoundException;
 import com.example.orderservice.Kafka.KafkaProducer;
 import com.example.orderservice.Repository.OrderRepository;
@@ -115,7 +116,14 @@ public class Services {
         if(order == null) throw new OrderNotFoundException("Order Not Found");
 //        order.setStatus(status);
 //        orderRepository.save(order);
-        return confirmAndDeliverOrder(orderId,authorizationHeader);
+        Long userId = order.getUserId();
+        BigDecimal amount =  order.getPrice();
+        boolean success = confirmAndDeliverOrder(orderId,authorizationHeader);
+        String status = null;
+        if(success) status = "SUCCESS";
+        else status = "FAILURE";
+        kafkaProducer.sendPaymentNotification(new PaymentNotification(status,orderId,userId,amount));
+        return success;
     }
 
 

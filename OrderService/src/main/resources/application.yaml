@@ -23,3 +23,11 @@ jwt:
 
 server:
   port: 8082
+
+services:
+  product:
+    url: ${PRODUCT_SERVICE_URL}
+  delivery:
+    url: ${DELIVERY_SERVICE_URL}
+  payment:
+    url: ${PAYMENT_SERVICE_URL}

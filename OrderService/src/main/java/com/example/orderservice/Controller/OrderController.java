@@ -39,6 +39,7 @@ public class OrderController {
     @PostMapping("/orderStatusConfirm")
     public ResponseEntity<?> orderStatusConfirm(@RequestBody UUID orderId, HttpServletRequest request){
         String authorizationHeader = request.getHeader("Authorization");
+//        In this service, the notification of payment verification event is sent into notification-event topic.
         boolean status = services.changeOrderStatusToConfirm(orderId,authorizationHeader);
         if(status){
         return new ResponseEntity<>("Shipment has been created",HttpStatus.OK);
