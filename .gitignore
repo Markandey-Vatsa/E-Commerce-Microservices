@@ -1,0 +1,4 @@
+.env
+**/.env
+
+hs_err_pid*.log

@@ -9,11 +9,14 @@ import com.example.orderservice.GlobalExceptionalHandler.OrderNotFoundException;
 import com.example.orderservice.Kafka.KafkaProducer;
 import com.example.orderservice.Repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -101,6 +104,9 @@ public class Services {
     public CheckoutDetailsDTO createPayment(UUID orderId,String authorizationHeader){
         //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order. --> DONE
        Order order = orderRepository.findById(orderId).orElse(null);
+       if(order.getStatus().equals(Status.CANCELLED)){
+           throw new OrderNotFoundException("Order Not Found");
+       }
        if(order == null) throw new OrderNotFoundException("Order Not Found");
         CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
                 .uri("/payments/create/{orderId}",order.getOrderId())
@@ -155,6 +161,28 @@ public class Services {
          return false;
     }
 
+    @Scheduled(fixedRate = 60000)
+    public void cancelExpiredOrders() {
+        LocalDateTime cutoff = LocalDateTime.now().minusMinutes(30);
+        List<Order> expiredOrders =
+                orderRepository.findByStatusAndCreatedAtBefore(
+                        Status.PENDING_PAYMENT, cutoff);
+        for (Order order : expiredOrders) {
+            try {
+                if (order.getStatus() != Status.PENDING_PAYMENT) {
+                    continue;
+                }
+                order.setStatus(Status.CANCELLED);
+                orderRepository.save(order);
+
+            } catch (Exception e) {
+                System.err.println(
+                        "Failed to cancel order " + order.getOrderId()
+                                + ": " + e.getMessage()
+                );
+            }
+        }
+    }
 
     private DeliveryTransferDTO getDeliveryTransferDTO(Order order){
         DeliveryTransferDTO dto = new DeliveryTransferDTO();

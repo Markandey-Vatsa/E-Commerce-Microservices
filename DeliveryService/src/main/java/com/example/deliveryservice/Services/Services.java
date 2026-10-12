@@ -1,6 +1,7 @@
 package com.example.deliveryservice.Services;
 
 
+import com.example.deliveryservice.DTO.DeliveryPartnerDetails;
 import com.example.deliveryservice.DTO.DeliveryTransferDTO;
 import com.example.deliveryservice.Entity.*;
 import com.example.deliveryservice.GlobalExceptionHandler.NoDeliveryPartnerAvailable;
@@ -80,5 +81,14 @@ public class Services {
         delivery.setDeliveryPartnerId(partner.getId());
         delivery.setStatus(DeliveryStatus.ASSIGNED);
         deliveryRepository.save(delivery);
+    }
+
+    public boolean addDeliveryPartner(DeliveryPartnerDetails details){
+        DeliveryPartners partner = new  DeliveryPartners();
+        partner.setName(details.getName());
+        partner.setPhone(details.getPhone());
+        partner.setPinCode(details.getPinCode());
+        deliveryPartnersRepository.save(partner);
+        return true;
     }
 }

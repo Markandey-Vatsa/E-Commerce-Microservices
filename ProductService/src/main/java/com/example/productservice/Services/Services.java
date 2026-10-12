@@ -107,7 +107,7 @@ public class Services {
 
         ReservedProductStock reservedProductStock = new ReservedProductStock();
         reservedProductStock.setCreatedAt(LocalDateTime.now());
-        reservedProductStock.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+        reservedProductStock.setExpiresAt(LocalDateTime.now().plusMinutes(32));
         reservedProductStock.setOrderId(request.getOrderId());
         reservedProductStock.setProductId(product.getId());
         reservedProductStock.setQuantity(request.getQuantity());

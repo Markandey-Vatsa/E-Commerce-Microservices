@@ -25,7 +25,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/createShipment").authenticated()
+                        .requestMatchers("/delivery/create/delivery-partner").hasRole("ADMIN")
+                        .requestMatchers("/delivery/createShipment").authenticated()
                 )
                 .addFilterBefore(
                         jwtAuthenticationFilter,

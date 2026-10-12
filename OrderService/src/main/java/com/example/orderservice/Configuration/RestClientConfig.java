@@ -9,6 +9,10 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class RestClientConfig {
 
+    public RestClientConfig() {
+        System.out.println("RestClientConfig initialized");
+    }
+
     @Value("${services.product.url}")
     private String productServiceUrl;
 
@@ -20,6 +24,9 @@ public class RestClientConfig {
 
     @Bean
     public RestClient productRestClient() {
+        System.out.println(
+                "========== PRODUCT SERVICE URL: " + productServiceUrl + " =========="
+        );
         return RestClient.builder()
                 .baseUrl(productServiceUrl)
                 .build();

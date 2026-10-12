@@ -1,6 +1,9 @@
 
 services:
   authentication-service:
+    build:
+      context: ./AuthenticationService
+      dockerfile: Dockerfile
     image: authentication-service:1.0
     env_file:
       - ./AuthenticationService/.env
@@ -11,6 +14,9 @@ services:
     restart: unless-stopped
 
   product-service:
+    build:
+      context: ./ProductService
+      dockerfile: Dockerfile
     image: product-service:1.0
     env_file:
       - ./ProductService/.env
@@ -21,6 +27,9 @@ services:
     restart: unless-stopped
 
   order-service:
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
     image: order-service:1.0
     env_file:
       - ./OrderService/.env
@@ -31,6 +40,9 @@ services:
     restart: unless-stopped
 
   delivery-service:
+    build:
+      context: ./DeliveryService
+      dockerfile: Dockerfile
     image: delivery-service:1.0
     env_file:
       - ./DeliveryService/.env
@@ -41,6 +53,9 @@ services:
     restart: unless-stopped
 
   payment-service:
+    build:
+      context: ./PaymentService
+      dockerfile: Dockerfile
     image: payment-service:1.0
     env_file:
       - ./PaymentService/.env
@@ -51,6 +66,9 @@ services:
     restart: unless-stopped
 
   notification-service:
+    build:
+      context: ./NotificationService
+      dockerfile: Dockerfile
     image: notification-service:1.0
     env_file:
       - ./NotificationService/.env
@@ -61,6 +79,9 @@ services:
     restart: unless-stopped
 
   api-gateway:
+    build:
+      context: ./APIGateway
+      dockerfile: Dockerfile
     image: api-gateway:1.0
     ports:
       - "8080:8080"
@@ -72,4 +93,3 @@ networks:
   microservices-net:
     external: true
     name: infrastructure_default
-
