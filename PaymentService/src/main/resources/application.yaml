@@ -26,4 +26,4 @@ services:
   product:
     url: ${PRODUCT_SERVICE_URL}
   order:
-    url: ${ORDER_SERVICE_URL}
+    url:  ${ORDER_SERVICE_URL:http://localhost:8082}
