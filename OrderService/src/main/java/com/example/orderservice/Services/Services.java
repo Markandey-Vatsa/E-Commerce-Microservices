@@ -104,10 +104,10 @@ public class Services {
     public CheckoutDetailsDTO createPayment(UUID orderId,String authorizationHeader){
         //        TODO: CALL PAYMENT SERVICE FOR THE PAYMENT, ONCE IT RETURNS CHECKOUT DETAILS-> send those details to frontend from orderCreate controller -> then frontend will verify payment by calling payment service -> then frontend will hit make-delivery controller to confirm the order. --> DONE
        Order order = orderRepository.findById(orderId).orElse(null);
+        if(order == null) throw new OrderNotFoundException("Order Not Found");
        if(order.getStatus().equals(Status.CANCELLED)){
            throw new OrderNotFoundException("Order Not Found");
        }
-       if(order == null) throw new OrderNotFoundException("Order Not Found");
         CheckoutDetailsDTO checkoutDetailsDTO = paymentServiceRestClient.post()
                 .uri("/payments/create/{orderId}",order.getOrderId())
                 .header("Authorization",authorizationHeader)
@@ -126,8 +126,15 @@ public class Services {
         BigDecimal amount =  order.getPrice();
         boolean success = confirmAndDeliverOrder(orderId,authorizationHeader);
         String status = null;
-        if(success) status = "SUCCESS";
-        else status = "FAILURE";
+        if(success){
+            status = "SUCCESS";
+//            TODO: CALL TO PERMANENTLY REDUCE THE STOCK FROM RESERVATIONS --> DONE
+            productRestClient.post()
+                    .uri("products/reduceStock/{orderId}", orderId)
+                    .header("Authorization", authorizationHeader)
+                    .retrieve()
+                    .toBodilessEntity();
+        } else{status = "FAILURE";}
         kafkaProducer.sendPaymentNotification(new PaymentNotification(status,orderId,userId,amount));
         return success;
     }
@@ -146,7 +153,7 @@ public class Services {
                 getDeliveryTransferDTO(order);
 
         HttpStatusCode status = deliveryRestClient.post()
-                .uri("/createShipment")
+                .uri("/delivery/createShipment")
                 .header("Authorization", authorizationHeader)
                 .body(deliveryTransferDTO)
                 .retrieve()

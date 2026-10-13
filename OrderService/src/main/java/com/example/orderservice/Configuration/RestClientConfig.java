@@ -24,9 +24,6 @@ public class RestClientConfig {
 
     @Bean
     public RestClient productRestClient() {
-        System.out.println(
-                "========== PRODUCT SERVICE URL: " + productServiceUrl + " =========="
-        );
         return RestClient.builder()
                 .baseUrl(productServiceUrl)
                 .build();
