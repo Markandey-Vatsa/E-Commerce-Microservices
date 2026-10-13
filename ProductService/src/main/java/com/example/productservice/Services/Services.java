@@ -1,6 +1,7 @@
 package com.example.productservice.Services;
 import com.example.productservice.DTO.StockReservationRequest;
 import com.example.productservice.DTO.StockReservationResponse;
+import com.example.productservice.DTO.StockUpdateRequest;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Entity.ReservedProductStock;
 import com.example.productservice.GlobalExceptionalHandler.ProductNotFoundException;
@@ -130,15 +131,20 @@ public class Services {
 
     @Transactional
     public void releaseStock(UUID orderId) {
-        Long reservationId = reservedStockRepository.findByOrderId(orderId); // one reservation is associated to one order, hence both unique Ids for a row.
         ReservedProductStock reservation =
-                reservedStockRepository.findById(reservationId)
-                        .orElseThrow(() ->
-                                new ReservationNotFouncException("Reservation not found"));
+                reservedStockRepository.findByOrderId(orderId);
+        if (reservation == null) {
+            throw new ReservationNotFouncException(
+                    "Reservation not found for order: " + orderId
+            );
+        }
         Product product =
-                productRepository.findByIdForUpdate(reservation.getProductId())
-                        .orElseThrow(() ->
-                                new ProductNotFoundException("Product not found"));
+                productRepository.findByIdForUpdate(
+                        reservation.getProductId()
+                ).orElseThrow(() ->
+                        new ProductNotFoundException("Product not found")
+                );
+
         product.setStock(
                 product.getStock() + reservation.getQuantity()
         );
@@ -175,5 +181,14 @@ public class Services {
     }
 
 
-
+//    WE WILL DELETE THE RESERVATION IN ORDER TO CONFIRM THE STOCK
+    public void confirmStockReduction(UUID orderId) {
+       ReservedProductStock reservation = reservedStockRepository.findByOrderId(orderId);
+        if (reservation == null) {
+            throw new ReservationNotFouncException(
+                    "Reservation not found for order: " + orderId
+            );
+        }
+        reservedStockRepository.delete(reservation);
+    }
 }

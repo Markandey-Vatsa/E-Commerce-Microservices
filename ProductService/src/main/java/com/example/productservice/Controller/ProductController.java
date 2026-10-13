@@ -81,11 +81,11 @@ public class ProductController {
 
 
 //    -----------------REDUCE STOCK-----------------
-//   @PostMapping("/reduceStock/{id}")
-//    public ResponseEntity<?> reduceStock(@PathVariable Long id, @RequestBody StockUpdateRequest quantity){
-//        Product product = services.reduceStock(id,quantity);
-//        return new ResponseEntity<>(product.getPrice(),HttpStatus.OK);
-//   }
+   @PostMapping("/reduceStock/{orderId}")
+    public ResponseEntity<?> reduceStock(@PathVariable UUID orderId){
+        services.confirmStockReduction(orderId);
+        return new ResponseEntity<>(HttpStatus.OK);
+   }
 
     @PostMapping("/reserveStock")
     public ResponseEntity<StockReservationResponse> reserveStock(

@@ -9,5 +9,7 @@ import java.util.UUID;
 
 public interface ReservedStockRepository extends JpaRepository<ReservedProductStock,Long> {
     List<ReservedProductStock> findByExpiresAtBefore(LocalDateTime time);
-    Long findByOrderId(UUID orderId);
+    ReservedProductStock findByOrderId(UUID orderId);
+
+//     List<ReservedProductStock>findById(Long reservationId);
 }
