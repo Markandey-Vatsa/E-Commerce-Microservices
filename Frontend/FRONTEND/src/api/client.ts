@@ -1,7 +1,7 @@
 import axios, { AxiosError } from 'axios';
 
 /** The API Gateway is the ONLY backend entry point. Never use ports 8081-8085. */
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://111.118.185.38:8080';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://inch-charm-colony-jones.trycloudflare.com';
 
 const TOKEN_KEY = 'mercato.token';
 export const tokenStore = {
