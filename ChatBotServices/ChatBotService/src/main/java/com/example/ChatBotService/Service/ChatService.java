@@ -1,6 +1,10 @@
 package com.example.ChatBotService.Service;
+import com.example.ChatBotService.DTO.ProductDTO;
+import com.example.ChatBotService.DTO.ProductSearchRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.LifecycleState;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -49,4 +53,9 @@ public class ChatService {
                 .call()
                 .content();
     }
+
+//    @Tool(description = "Search products in the catalogue.")
+//    public ProductDTO searchProducts(ProductSearchRequest request){
+//
+//    }
 }
