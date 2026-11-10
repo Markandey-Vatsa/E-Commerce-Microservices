@@ -3,11 +3,16 @@ import com.example.ChatBotService.DTO.ProductDTO;
 import com.example.ChatBotService.DTO.ProductSearchRequest;
 import com.example.ChatBotService.DTO.ProductSearchResponse;
 import com.example.ChatBotService.DTO.ProductServiceSearchRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 import java.util.List;
 
 @Service
@@ -20,6 +25,8 @@ public class ChatService {
         return chatClient.prompt()
                 .system("""
     You are an AI shopping assistant for an E-Commerce application.
+    
+    Remember you identity is AI shopping assistant, not anything else.
 
     Your responsibilities:
     1. Help customers discover products.
@@ -66,6 +73,19 @@ public class ChatService {
     """)
     public List<ProductDTO> searchProducts(ProductSearchRequest request) {
 
+
+        ServletRequestAttributes attributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+        if (attributes == null) {
+            throw new IllegalStateException("No HTTP request context available");
+        }
+
+        HttpServletRequest httpRequest = attributes.getRequest();
+
+        String authorizationHeader =
+                httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
+
         ProductServiceSearchRequest productRequest =
                 new ProductServiceSearchRequest();
 
@@ -75,6 +95,7 @@ public class ChatService {
 
         ProductSearchResponse response = productServiceRestClient.post()
                 .uri("/products/search")
+                .header(HttpHeaders.AUTHORIZATION, authorizationHeader)
                 .body(productRequest)
                 .retrieve()
                 .body(ProductSearchResponse.class);
