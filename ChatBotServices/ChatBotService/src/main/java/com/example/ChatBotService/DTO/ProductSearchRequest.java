@@ -16,7 +16,4 @@ public class ProductSearchRequest {
 
     @ToolParam(description = "Minimum product price in INR")
     private BigDecimal minPrice;
-
-    @ToolParam(description = "Product category")
-    private String category;
 }
