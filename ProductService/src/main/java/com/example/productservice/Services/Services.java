@@ -1,7 +1,5 @@
 package com.example.productservice.Services;
-import com.example.productservice.DTO.StockReservationRequest;
-import com.example.productservice.DTO.StockReservationResponse;
-import com.example.productservice.DTO.StockUpdateRequest;
+import com.example.productservice.DTO.*;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Entity.ReservedProductStock;
 import com.example.productservice.GlobalExceptionalHandler.ProductNotFoundException;
@@ -10,6 +8,9 @@ import com.example.productservice.Repository.ProductRepository;
 import com.example.productservice.Repository.ReservedStockRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -191,4 +192,85 @@ public class Services {
         }
         reservedStockRepository.delete(reservation);
     }
+
+
+    public ProductSearchResponse searchProducts(ProductSearchRequest request) {
+
+        if (request.getMinPrice() != null &&
+                request.getMaxPrice() != null &&
+                request.getMinPrice().compareTo(request.getMaxPrice()) > 0) {
+
+            throw new IllegalArgumentException(
+                    "Minimum price cannot exceed maximum price"
+            );
+        }
+
+        if (request.getSize() == null ||
+                request.getSize() < 1 ||
+                request.getSize() > 100) {
+
+            throw new IllegalArgumentException(
+                    "Page size must be between 1 and 100"
+            );
+        }
+
+        if (request.getPage() == null || request.getPage() < 0) {
+            throw new IllegalArgumentException(
+                    "Page number cannot be negative"
+            );
+        }
+
+        if (request.getKeyword() == null ||
+                request.getKeyword().isBlank()) {
+
+            throw new IllegalArgumentException(
+                    "Search keyword cannot be empty"
+            );
+        }
+
+        Pageable pageable = PageRequest.of(
+                request.getPage(),
+                request.getSize()
+        );
+
+        Page<Product> result = productRepository.searchProducts(
+                request.getKeyword().trim(),
+                request.getMinPrice(),
+                request.getMaxPrice(),
+                pageable
+        );
+
+        ProductSearchResponse response = new ProductSearchResponse();
+
+        response.setContent(
+                result.getContent().stream()
+                        .map(this::convertToDTO)
+                        .toList()
+        );
+
+        response.setTotalElements((int) result.getTotalElements());
+        response.setTotalPages(result.getTotalPages());
+        response.setNumber(result.getNumber());
+        response.setSize(result.getSize());
+        response.setFirst(result.isFirst());
+        response.setLast(result.isLast());
+        response.setEmpty(result.isEmpty());
+
+        return response;
+    }
+
+
+    private ProductDTO convertToDTO(Product product) {
+
+        ProductDTO dto = new ProductDTO();
+
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setStock(product.getStock());
+
+        return dto;
+    }
+
 }

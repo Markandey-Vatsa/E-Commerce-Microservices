@@ -1,18 +1,12 @@
 package com.example.productservice.Controller;
-
-
-import com.example.productservice.DTO.StockReservationRequest;
-import com.example.productservice.DTO.StockReservationResponse;
-import com.example.productservice.DTO.StockUpdateRequest;
+import com.example.productservice.DTO.*;
 import com.example.productservice.Entity.Product;
 import com.example.productservice.Services.Services;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -112,5 +106,12 @@ public class ProductController {
         return new ResponseEntity<>(list,HttpStatus.OK);
     }
 
-
+//    Chatbot calls this endpoint
+    @PostMapping("/search")
+    public ResponseEntity<ProductSearchResponse> searchProducts(
+            @RequestBody ProductSearchRequest request) {
+        return ResponseEntity.ok(
+                services.searchProducts(request)
+        );
+    }
 }
