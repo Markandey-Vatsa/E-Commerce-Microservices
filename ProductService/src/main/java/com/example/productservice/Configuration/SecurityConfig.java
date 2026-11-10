@@ -28,7 +28,6 @@ public class SecurityConfig {
                         .requestMatchers("/products/deleteProduct").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/products/updateProduct").hasAnyRole("SELLER","ADMIN")
                         .requestMatchers("/products/getProduct/**").authenticated()
-                        .requestMatchers("/products/search").permitAll()
                         .anyRequest().authenticated()
 
                 )
