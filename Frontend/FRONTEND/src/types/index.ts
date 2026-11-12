@@ -40,3 +40,19 @@ export interface VerifyPaymentRequest { razorpayOrderId: string; razorpayPayment
 export interface CartLine {
   productId: number; name: string; price: number; stock: number; quantity: number; sellerEmail: string;
 }
+
+/* ---------- AI shopping assistant ---------- */
+
+/** A product the assistant recommended. Every field except id/name is optional: we only show what the backend actually returned. */
+export interface ChatProduct { id: number; name: string; description?: string; price?: number; stock?: number }
+
+export interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  text: string;
+  products?: ChatProduct[];
+  createdAt: number;
+}
+
+/** Normalised reply from ChatBotService, whatever shape the backend sends. */
+export interface ChatReply { text: string; products: ChatProduct[] }

@@ -8,6 +8,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { PaymentPanel } from '../../components/PaymentPanel';
 import { QuantityStepper } from '../../components/CartItem';
+import { ProductCover } from '../../components/ProductCard';
 import { Alert, ErrorState, Field, Skeleton, Spinner } from '../../components/ui';
 import { UserIdLimitation } from '../Orders';
 import { formatINR } from '../../utils/format';
@@ -33,7 +34,7 @@ export default function Checkout() {
   const [orderId, setOrderId] = useState<string | null>(null);
 
   if (!productId) return <Navigate to="/cart" replace />;
-  if (loading) return <div className="container-page grid gap-6 py-10 md:grid-cols-2"><Skeleton className="h-96" /><Skeleton className="h-64" /></div>;
+  if (loading) return <div className="container-page grid gap-6 py-10 md:grid-cols-2"><Skeleton className="h-96 rounded-3xl" /><Skeleton className="h-64 rounded-3xl" /></div>;
   if (error) return <div className="container-page py-10"><ErrorState error={error} onRetry={reload} /></div>;
   if (!p) return null;
 
@@ -70,9 +71,10 @@ export default function Checkout() {
   if (orderId) {
     return (
       <div className="container-page max-w-2xl py-10">
-        <h1 className="text-3xl font-bold">Order placed</h1>
-        <p className="mt-2 text-sm text-muted">Your stock is reserved for about 30 minutes. Complete payment to confirm the order.</p>
-        <p className="mt-4 text-sm">Order <span className="font-mono">{orderId}</span> &middot; {p.name} &times; {q} &middot; {formatINR(total)}</p>
+        <span className="chip bg-ok-tint text-ok"><span className="h-1.5 w-1.5 rounded-full bg-ok" />Stock reserved</span>
+        <h1 className="mt-3 text-4xl">Order placed</h1>
+        <p className="mt-2 text-sm text-subtle">Your stock is reserved for about 30 minutes. Complete payment to confirm the order.</p>
+        <p className="panel mt-5 px-5 py-4 text-sm">Order <span className="font-mono font-medium">{orderId}</span> &middot; {p.name} &times; {q} &middot; <span className="font-semibold">{formatINR(total)}</span></p>
         <div className="mt-6"><PaymentPanel orderId={orderId} autoStart /></div>
       </div>
     );
@@ -80,11 +82,11 @@ export default function Checkout() {
 
   return (
     <div className="container-page py-10">
-      <h1 className="mb-6 text-3xl font-bold">Checkout</h1>
+      <h1 className="mb-8 text-4xl">Checkout</h1>
       {user?.userId == null && <div className="mb-6"><UserIdLimitation /></div>}
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <form onSubmit={submit} className="card space-y-4 p-6" noValidate>
-          <h2 className="text-lg font-bold">Delivery address</h2>
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_380px]">
+        <form onSubmit={submit} className="panel space-y-5 p-7" noValidate>
+          <h2 className="text-xl font-bold">Delivery address</h2>
           {apiError && <Alert kind="error">{apiError}</Alert>}
           <div className="grid gap-4 sm:grid-cols-2">
             {FIELDS.map(([k, label, ac]) => (
@@ -94,20 +96,22 @@ export default function Checkout() {
               </Field>
             ))}
           </div>
-          <button className="btn-primary w-full sm:w-auto" disabled={busy || insufficient || user?.userId == null}>
+          <button className="btn-sun w-full px-8 py-3 sm:w-auto" disabled={busy || insufficient || user?.userId == null}>
             {busy && <Spinner />}Place order
           </button>
         </form>
 
-        <aside className="card h-fit p-6">
-          <h2 className="text-lg font-bold">Order summary</h2>
-          <p className="mt-4 font-medium">{p.name}</p>
-          <p className="text-sm text-muted">{formatINR(p.price)} each</p>
-          <div className="mt-4"><QuantityStepper value={q} max={Math.max(p.stock, 1)} onChange={setQty} label="Quantity" /></div>
-          {insufficient && <p className="mt-3 text-sm text-red-700">{p.stock <= 0 ? 'This product is out of stock.' : `Only ${p.stock} in stock.`}</p>}
-          <div className="mt-5 flex justify-between border-t border-line pt-4 font-bold"><span>Total</span><span className="font-display">{formatINR(total)}</span></div>
-          <p className="mt-3 text-xs text-muted">Placing the order reserves your stock. The final amount is confirmed by the server at payment.</p>
-          <Link to="/cart" className="mt-4 inline-block text-sm text-pine underline">Back to cart</Link>
+        <aside className="panel p-7 lg:sticky lg:top-24">
+          <h2 className="text-xl font-bold">Order summary</h2>
+          <div className="mt-5 flex gap-4">
+            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl"><ProductCover product={p} className="h-full w-full !p-2 [&>span:last-child]:!text-3xl" /></div>
+            <div className="min-w-0"><p className="font-semibold leading-snug">{p.name}</p><p className="text-sm text-subtle">{formatINR(p.price)} each</p></div>
+          </div>
+          <div className="mt-5"><QuantityStepper value={q} max={Math.max(p.stock, 1)} onChange={setQty} label="Quantity" /></div>
+          {insufficient && <p className="mt-3 text-sm font-medium text-danger">{p.stock <= 0 ? 'This product is out of stock.' : `Only ${p.stock} in stock.`}</p>}
+          <div className="mt-6 flex items-baseline justify-between border-t border-hair pt-5 font-bold"><span>Total</span><span className="font-display text-2xl">{formatINR(total)}</span></div>
+          <p className="mt-3 text-xs text-subtle">Placing the order reserves your stock. The final amount is confirmed by the server at payment.</p>
+          <Link to="/cart" className="mt-4 inline-block text-sm font-semibold text-brand underline">Back to cart</Link>
         </aside>
       </div>
     </div>

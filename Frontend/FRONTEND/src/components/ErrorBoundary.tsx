@@ -9,8 +9,8 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { error: E
     return (
       <div className="mx-auto max-w-2xl p-8">
         <h1 className="text-2xl font-bold">Something broke while rendering</h1>
-        <p className="mt-2 text-sm text-muted">Reload the page. If it keeps happening, this message is what to report:</p>
-        <pre className="mt-4 overflow-x-auto rounded-md border border-line bg-white p-4 text-xs">{this.state.error.stack ?? this.state.error.message}</pre>
+        <p className="mt-2 text-sm text-subtle">Reload the page. If it keeps happening, this message is what to report:</p>
+        <pre className="mt-4 overflow-x-auto rounded-xl border border-hair bg-surface p-4 text-xs">{this.state.error.stack ?? this.state.error.message}</pre>
         <button className="btn-primary mt-4" onClick={() => { try { localStorage.clear(); } catch { /* ignore */ } location.href = '/'; }}>Clear saved data and reload</button>
       </div>
     );

@@ -35,7 +35,7 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout title="Log in" sub="Welcome back." footer={<>New here? <Link className="font-medium text-pine underline" to="/register">Create an account</Link></>}>
+    <AuthLayout title="Log in" sub="Welcome back." footer={<>New here? <Link className="font-semibold text-brand underline" to="/register">Create an account</Link></>}>
       <form onSubmit={submit} className="space-y-4" noValidate>
         {sessionExpired && <Alert kind="info">Session expired. Please log in again.</Alert>}
         {apiError && <Alert kind="error">{apiError}</Alert>}
@@ -45,7 +45,7 @@ export default function Login() {
         <Field label="Password" htmlFor="password" error={errors.password}>
           <input id="password" type="password" autoComplete="current-password" className="input" value={password} onChange={(e) => setPassword(e.target.value)} disabled={busy} />
         </Field>
-        <div className="text-right text-sm"><Link to="/forgot-password" className="text-pine underline">Forgot password?</Link></div>
+        <div className="text-right text-sm"><Link to="/forgot-password" className="text-brand underline">Forgot password?</Link></div>
         <button className="btn-primary w-full" disabled={busy || !username || !password}>{busy && <Spinner />}Log in</button>
       </form>
     </AuthLayout>

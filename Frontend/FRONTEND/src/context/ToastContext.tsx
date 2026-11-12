@@ -6,9 +6,9 @@ interface ToastApi { success: (m: string) => void; error: (m: string) => void; i
 const ToastContext = createContext<ToastApi | null>(null);
 
 const styles: Record<Kind, string> = {
-  success: 'border-pine bg-pine-tint text-pine-dark',
-  error: 'border-red-300 bg-red-50 text-red-800',
-  info: 'border-line bg-white text-ink',
+  success: 'bg-fg text-white',
+  error: 'bg-danger text-white',
+  info: 'bg-fg text-white',
 };
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -27,8 +27,8 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div className="pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-center gap-2 px-4" role="status" aria-live="polite">
         {items.map((t) => (
-          <div key={t.id} className={`pointer-events-auto w-full max-w-sm rounded-md border px-4 py-3 text-sm shadow-sm ${styles[t.kind]}`}>
-            {t.message}
+          <div key={t.id} className={`toast-in pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-full px-5 py-3 text-sm font-medium shadow-xl ${styles[t.kind]}`}>
+            <span className={`h-2 w-2 shrink-0 rounded-full ${t.kind === 'error' ? 'bg-white' : t.kind === 'success' ? 'bg-sun' : 'bg-brand-tint'}`} aria-hidden />{t.message}
           </div>
         ))}
       </div>

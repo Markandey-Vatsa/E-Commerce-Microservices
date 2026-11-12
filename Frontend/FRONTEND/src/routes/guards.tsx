@@ -18,7 +18,7 @@ export function ProtectedRoute({ roles, children }: { roles?: Role[]; children: 
       <RoleGuard roles={roles} fallback={
         <div className="container-page py-20 text-center">
           <h1 className="text-2xl font-bold">You do not have access to this page</h1>
-          <p className="mt-2 text-sm text-muted">This area is for {roles.join(' / ').toLowerCase()} accounts.</p>
+          <p className="mt-2 text-sm text-subtle">This area is for {roles.join(' / ').toLowerCase()} accounts.</p>
           <Link to="/" className="btn-primary mt-6">Back to home</Link>
         </div>
       }>{children}</RoleGuard>

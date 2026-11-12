@@ -35,7 +35,7 @@ export default function Register() {
   };
 
   return (
-    <AuthLayout title="Create your account" footer={<>Already registered? <Link className="font-medium text-pine underline" to="/login">Log in</Link></>}>
+    <AuthLayout title="Create your account" footer={<>Already registered? <Link className="font-semibold text-brand underline" to="/login">Log in</Link></>}>
       <form onSubmit={submit} className="space-y-4" noValidate>
         {apiError && <Alert kind="error">{apiError}</Alert>}
         <div className="grid gap-4 sm:grid-cols-2">
@@ -48,8 +48,8 @@ export default function Register() {
           <legend className="label">I want to</legend>
           <div className="grid grid-cols-2 gap-3">
             {([['CUSTOMER', 'Buy products'], ['SELLER', 'Sell products']] as const).map(([v, l]) => (
-              <label key={v} className={`flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2.5 text-sm ${role === v ? 'border-pine bg-pine-tint' : 'border-line bg-white'}`}>
-                <input type="radio" name="role" className="accent-pine" checked={role === v} onChange={() => setRole(v)} disabled={busy} />{l}
+              <label key={v} className={`flex cursor-pointer items-center gap-2 rounded-xl border-[1.5px] px-3.5 py-3 text-sm font-semibold transition-colors ${role === v ? 'border-brand bg-brand-tint text-brand-ink' : 'border-hair bg-surface'}`}>
+                <input type="radio" name="role" className="accent-[#4637D4]" checked={role === v} onChange={() => setRole(v)} disabled={busy} />{l}
               </label>
             ))}
           </div>

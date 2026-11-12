@@ -8,10 +8,10 @@ import { AuthLayout, isEmail } from './AuthLayout';
 const STEPS = ['Email', 'Code', 'New password'];
 function Steps({ current }: { current: number }) {
   return (
-    <ol className="mb-5 flex gap-2 text-xs" aria-label="Password recovery steps">
+    <ol className="mb-6 flex gap-2 text-xs" aria-label="Password recovery steps">
       {STEPS.map((s, i) => (
         <li key={s} aria-current={i === current ? 'step' : undefined}
-          className={`flex-1 rounded-md border px-2 py-1.5 text-center ${i === current ? 'border-pine bg-pine-tint font-medium text-pine-dark' : i < current ? 'border-line text-muted line-through' : 'border-line text-muted'}`}>
+          className={`flex-1 rounded-full px-2 py-1.5 text-center font-semibold ${i === current ? 'bg-brand text-white' : i < current ? 'bg-brand-tint text-brand-ink' : 'bg-canvas text-subtle'}`}>
           {i + 1}. {s}
         </li>
       ))}
@@ -33,7 +33,7 @@ export function ForgotPassword() {
     catch (x) { setErr(msg(x)); } finally { setBusy(false); }
   };
   return (
-    <AuthLayout title="Reset your password" sub="We will email you a one-time code." footer={<Link to="/login" className="text-pine underline">Back to log in</Link>}>
+    <AuthLayout title="Reset your password" sub="We will email you a one-time code." footer={<Link to="/login" className="text-brand underline">Back to log in</Link>}>
       <Steps current={0} />
       <form onSubmit={submit} className="space-y-4" noValidate>
         {err && <Alert kind="error">{err}</Alert>}
@@ -60,7 +60,7 @@ export function VerifyOtp() {
     catch (x) { setErr(msg(x)); } finally { setBusy(false); }
   };
   return (
-    <AuthLayout title="Enter your code" sub={st?.sent ? 'We sent a code to your email.' : 'Enter the code we emailed you.'} footer={<Link to="/forgot-password" className="text-pine underline">Send a new code</Link>}>
+    <AuthLayout title="Enter your code" sub={st?.sent ? 'We sent a code to your email.' : 'Enter the code we emailed you.'} footer={<Link to="/forgot-password" className="text-brand underline">Send a new code</Link>}>
       <Steps current={1} />
       <form onSubmit={submit} className="space-y-4" noValidate>
         {err && <Alert kind="error">{err}</Alert>}

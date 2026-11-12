@@ -1,9 +1,12 @@
 import axios, { AxiosError } from 'axios';
 
 /** The API Gateway is the ONLY backend entry point. Never use ports 8081-8085. */
-export const API_BASE_URL = import.meta.env.DEV
-  ? '/api'
-  : 'https://inch-charm-colony-jones.trycloudflare.com';
+/**
+ * Dev: VITE_API_BASE_URL=/api (Vite proxy -> gateway). Prod: the public gateway URL from the Vercel env var.
+ * Nothing in the app hardcodes a host; set VITE_API_BASE_URL in Vercel.
+ */
+export const API_BASE_URL: string = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.replace(/\/+$/, '')
+  || (import.meta.env.DEV ? '/api' : '');
 
 const TOKEN_KEY = 'mercato.token';
 export const tokenStore = {
@@ -14,6 +17,8 @@ export const tokenStore = {
 
 let onUnauthorized: (() => void) | null = null;
 export const setUnauthorizedHandler = (fn: (() => void) | null) => { onUnauthorized = fn; };
+/** End the session the same way a 401 does (clears the token, flags "session expired", guards redirect to /login). */
+export const triggerUnauthorized = () => { tokenStore.clear(); onUnauthorized?.(); };
 
 export class ApiError extends Error {
   status: number;

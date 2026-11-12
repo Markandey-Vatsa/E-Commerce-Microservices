@@ -41,9 +41,9 @@ export default function Cart() {
     <div className="container-page py-10">
       <PageHeader title="Cart" sub={`${cart.count} item${cart.count === 1 ? '' : 's'}`}
         action={<button className="btn-ghost" onClick={cart.clear}>Clear cart</button>} />
-      <div className="mb-5"><Alert kind="info">Each order covers one product, so you check out one cart item at a time. Stock is only held once you place an order.</Alert></div>
-      {netErr && <div className="mb-5"><Alert kind="error">We could not refresh stock for some items. Availability will be checked again at checkout.</Alert></div>}
-      <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+      <div className="mb-6"><Alert kind="info">Each order covers one product, so you check out one cart item at a time. Stock is only held once you place an order.</Alert></div>
+      {netErr && <div className="mb-6"><Alert kind="error">We could not refresh stock for some items. Availability will be checked again at checkout.</Alert></div>}
+      <div className="grid items-start gap-8 lg:grid-cols-[1fr_340px]">
         <ul className="space-y-3">
           {cart.items.map((l) => (
             <CartItem key={l.productId} line={l} unavailable={gone.has(l.productId)}
@@ -51,13 +51,13 @@ export default function Cart() {
               onCheckout={() => nav('/checkout', { state: { productId: l.productId, quantity: l.quantity } })} />
           ))}
         </ul>
-        <aside className="card h-fit p-5">
-          <h2 className="text-lg font-bold">Summary</h2>
-          <dl className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between"><dt className="text-muted">Subtotal</dt><dd>{formatINR(cart.subtotal)}</dd></div>
-            <div className="flex justify-between border-t border-line pt-2 text-base font-bold"><dt>Total</dt><dd className="font-display">{formatINR(cart.subtotal)}</dd></div>
+        <aside className="panel p-6 lg:sticky lg:top-24">
+          <h2 className="text-xl font-bold">Summary</h2>
+          <dl className="mt-5 space-y-3 text-sm">
+            <div className="flex justify-between"><dt className="text-subtle">Subtotal</dt><dd className="font-medium">{formatINR(cart.subtotal)}</dd></div>
+            <div className="flex items-baseline justify-between border-t border-hair pt-4 text-base font-bold"><dt>Total</dt><dd className="font-display text-2xl">{formatINR(cart.subtotal)}</dd></div>
           </dl>
-          <p className="mt-3 flex items-center gap-2 text-xs text-muted">{checking && <Spinner className="h-3 w-3" />}{checking ? 'Checking stock...' : 'Prices and stock were just refreshed.'}</p>
+          <p className="mt-4 flex items-center gap-2 text-xs text-subtle">{checking && <Spinner className="h-3 w-3" />}{checking ? 'Checking stock...' : 'Prices and stock were just refreshed.'}</p>
         </aside>
       </div>
     </div>

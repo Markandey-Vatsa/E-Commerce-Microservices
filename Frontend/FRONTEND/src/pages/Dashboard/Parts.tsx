@@ -30,16 +30,21 @@ export function Overview({ scope }: { scope: Scope }) {
       {loading ? <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">{[0, 1, 2, 3].map((i) => <Skeleton key={i} className="h-24" />)}</div> : error ? <ErrorState error={error} onRetry={reload} /> : (
         <>
           <dl className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {stats.map(([k, v]) => <div key={k} className="card p-4"><dt className="text-sm text-muted">{k}</dt><dd className="mt-1 font-display text-3xl font-bold">{v}</dd></div>)}
+            {stats.map(([k, v], i) => (
+              <div key={k} className="panel relative overflow-hidden p-5">
+                <span className={`absolute inset-x-0 top-0 h-1 ${['bg-brand', 'bg-sun', 'bg-danger', 'bg-ok'][i % 4]}`} aria-hidden />
+                <dt className="text-sm text-subtle">{k}</dt><dd className="mt-2 font-display text-4xl font-bold">{v}</dd>
+              </div>
+            ))}
           </dl>
-          <h2 className="mb-3 mt-10 text-lg font-bold">Needs attention</h2>
-          {!attention.length ? <p className="card p-5 text-sm text-muted">{list.length ? 'Everything is well stocked.' : 'No products yet.'}</p> : (
-            <ul className="card divide-y divide-line">
+          <h2 className="mb-4 mt-12 text-xl font-bold">Needs attention</h2>
+          {!attention.length ? <p className="panel p-6 text-sm text-subtle">{list.length ? 'Everything is well stocked.' : 'No products yet.'}</p> : (
+            <ul className="panel divide-y divide-hair overflow-hidden">
               {attention.map((p) => (
-                <li key={p.id} className="flex items-center justify-between gap-3 px-4 py-3 text-sm">
+                <li key={p.id} className="flex items-center justify-between gap-3 px-5 py-3.5 text-sm">
                   <span className="truncate font-medium">{p.name}</span>
-                  <span className={p.stock <= 0 ? 'text-red-700' : 'text-amber-700'}>{p.stock <= 0 ? 'Out of stock' : `${p.stock} left`}</span>
-                  <Link to={`${base}/products/edit/${p.id}`} className="text-pine underline">Edit</Link>
+                  <span className={`font-semibold ${p.stock <= 0 ? 'text-danger' : 'text-warn'}`}>{p.stock <= 0 ? 'Out of stock' : `${p.stock} left`}</span>
+                  <Link to={`${base}/products/edit/${p.id}`} className="font-semibold text-brand underline">Edit</Link>
                 </li>
               ))}
             </ul>
@@ -69,8 +74,8 @@ export function ProductTable({ scope }: { scope: Scope }) {
 
   const actions = (p: Product) => (
     <div className="flex justify-end gap-2">
-      <Link to={`${base}/products/edit/${p.id}`} className="btn-secondary px-3 py-1.5">Edit</Link>
-      <button className="btn-ghost px-3 py-1.5 text-red-700" onClick={() => setTarget(p)}>Delete</button>
+      <Link to={`${base}/products/edit/${p.id}`} className="btn-secondary !px-4 !py-1.5">Edit</Link>
+      <button className="btn-ghost !px-4 !py-1.5 text-danger hover:!bg-danger-tint hover:!text-danger" onClick={() => setTarget(p)}>Delete</button>
     </div>
   );
 
@@ -81,22 +86,22 @@ export function ProductTable({ scope }: { scope: Scope }) {
         <EmptyState title={scope === 'admin' ? 'No products in the catalogue yet.' : "You haven't created any products yet."} body="Products you add appear in the catalogue straight away." action={<Link to={`${base}/products/create`} className="btn-primary">Create a product</Link>} />
       ) : (
         <>
-          <input type="search" aria-label="Search products" placeholder={scope === 'admin' ? 'Search by name or seller' : 'Search by name'} className="input mb-4 max-w-sm" value={q} onChange={(e) => setQ(e.target.value)} />
+          <input type="search" aria-label="Search products" placeholder={scope === 'admin' ? 'Search by name or seller' : 'Search by name'} className="input mb-5 max-w-sm !rounded-full" value={q} onChange={(e) => setQ(e.target.value)} />
           {!rows.length ? <EmptyState title="No products match your search." /> : (
             <>
-              <div className="card hidden overflow-x-auto md:block">
+              <div className="panel hidden overflow-x-auto md:block">
                 <table className="w-full text-left text-sm">
-                  <thead className="border-b border-line text-muted"><tr>
+                  <thead className="border-b border-hair bg-canvas text-subtle"><tr>
                     <th className="px-4 py-3 font-medium">Product</th>{scope === 'admin' && <th className="px-4 py-3 font-medium">Seller</th>}
                     <th className="px-4 py-3 font-medium">Price</th><th className="px-4 py-3 font-medium">Stock</th><th className="px-4 py-3"><span className="sr-only">Actions</span></th>
                   </tr></thead>
-                  <tbody className="divide-y divide-line">
+                  <tbody className="divide-y divide-hair">
                     {rows.map((p) => (
-                      <tr key={p.id}>
+                      <tr key={p.id} className="hover:bg-canvas/70">
                         <td className="px-4 py-3 font-medium">{p.name}</td>
-                        {scope === 'admin' && <td className="px-4 py-3 text-muted">{p.sellerEmail}</td>}
+                        {scope === 'admin' && <td className="px-4 py-3 text-subtle">{p.sellerEmail}</td>}
                         <td className="px-4 py-3">{formatINR(p.price)}</td>
-                        <td className={`px-4 py-3 ${p.stock <= 0 ? 'font-medium text-red-700' : ''}`}>{p.stock <= 0 ? 'Out of stock' : p.stock}</td>
+                        <td className={`px-4 py-3 ${p.stock <= 0 ? 'font-semibold text-danger' : ''}`}>{p.stock <= 0 ? 'Out of stock' : p.stock}</td>
                         <td className="px-4 py-3">{actions(p)}</td>
                       </tr>
                     ))}
@@ -105,10 +110,10 @@ export function ProductTable({ scope }: { scope: Scope }) {
               </div>
               <ul className="space-y-3 md:hidden">
                 {rows.map((p) => (
-                  <li key={p.id} className="card p-4">
+                  <li key={p.id} className="card p-5">
                     <p className="font-bold">{p.name}</p>
-                    {scope === 'admin' && <p className="text-xs text-muted">{p.sellerEmail}</p>}
-                    <p className="mt-1 text-sm">{formatINR(p.price)} &middot; {p.stock <= 0 ? <span className="text-red-700">Out of stock</span> : `${p.stock} in stock`}</p>
+                    {scope === 'admin' && <p className="text-xs text-subtle">{p.sellerEmail}</p>}
+                    <p className="mt-1 text-sm">{formatINR(p.price)} &middot; {p.stock <= 0 ? <span className="font-semibold text-danger">Out of stock</span> : `${p.stock} in stock`}</p>
                     <div className="mt-3">{actions(p)}</div>
                   </li>
                 ))}

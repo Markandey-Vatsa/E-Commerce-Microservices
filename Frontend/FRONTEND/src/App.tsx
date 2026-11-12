@@ -2,6 +2,7 @@ import { BrowserRouter, Outlet, Route, Routes, useLocation } from 'react-router-
 import { useEffect } from 'react';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import { ChatProvider } from './context/ChatContext';
 import { ToastProvider } from './context/ToastContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
@@ -19,6 +20,7 @@ import Register from './pages/Auth/Register';
 import { ForgotPassword, ResetPassword, VerifyOtp } from './pages/Auth/Recovery';
 import SellerDashboard from './pages/SellerDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import Chatbot from './pages/Chatbot';
 import NotFound from './pages/NotFound';
 
 function Layout() {
@@ -26,7 +28,7 @@ function Layout() {
   useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   return (
     <div className="flex min-h-screen flex-col">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-md focus:bg-white focus:px-3 focus:py-2">Skip to content</a>
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-2 focus:top-2 focus:z-50 focus:rounded-full focus:bg-surface focus:px-4 focus:py-2 focus:font-semibold focus:shadow-lg">Skip to content</a>
       <Navbar />
       <main id="main" className="flex-1"><Outlet /></main>
       <Footer />
@@ -40,6 +42,7 @@ export default function App() {
       <ToastProvider>
         <AuthProvider>
           <CartProvider>
+            <ChatProvider>
             <Routes>
               <Route element={<Layout />}>
                 <Route index element={<Home />} />
@@ -54,12 +57,14 @@ export default function App() {
                 <Route path="checkout" element={<ProtectedRoute><Checkout /></ProtectedRoute>} />
                 <Route path="orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
                 <Route path="orders/:id" element={<ProtectedRoute><OrderDetails /></ProtectedRoute>} />
+                <Route path="chat" element={<ProtectedRoute><Chatbot /></ProtectedRoute>} />
                 <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                 <Route path="seller/*" element={<ProtectedRoute roles={['SELLER']}><SellerDashboard /></ProtectedRoute>} />
                 <Route path="admin/*" element={<ProtectedRoute roles={['ADMIN']}><AdminDashboard /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
+            </ChatProvider>
           </CartProvider>
         </AuthProvider>
       </ToastProvider>

@@ -25,7 +25,7 @@ export function ProductForm({ initial, submitLabel, submitting, cancelTo, onSubm
   };
 
   return (
-    <form onSubmit={submit} className="card max-w-2xl space-y-5 p-6" noValidate>
+    <form onSubmit={submit} className="panel max-w-2xl space-y-6 p-7" noValidate>
       <Field label="Name" htmlFor="pf-name" error={errors.name}>
         <input id="pf-name" className="input" value={name} onChange={(e) => setName(e.target.value)} disabled={submitting} />
       </Field>

@@ -25,22 +25,24 @@ export function PaymentPanel({ orderId, autoStart, onSuccess }: { orderId: strin
   }, []);
   useEffect(() => { if (phase === 'success') onSuccess?.(); }, [phase, onSuccess]);
 
+  const tone = phase === 'success' ? 'bg-ok-tint text-ok' : phase === 'failed' || phase === 'verification_failed' ? 'bg-danger-tint text-danger' : 'bg-brand-tint text-brand';
+
   return (
-    <section className="card p-6" aria-live="polite">
-      <h2 className="text-lg font-bold">Payment</h2>
-      <p className="mt-1 flex items-center gap-2 text-sm">
+    <section className="panel p-7" aria-live="polite">
+      <h2 className="text-xl font-bold">Payment</h2>
+      <p className={`mt-3 inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-semibold ${tone}`}>
         {working && <Spinner />}<span>{COPY[phase]}</span>
       </p>
       {phase === 'success' && <div className="mt-4"><Alert kind="success">The server confirmed your payment. Your order status will update shortly.</Alert></div>}
       {(phase === 'failed' || phase === 'verification_failed') && (
-        <div className="mt-4 space-y-2">
+        <div className="mt-4 space-y-3">
           {message && <Alert kind="error">{message}</Alert>}
-          {phase === 'verification_failed' && <p className="text-sm text-muted">If money left your account, do not pay again. Check the order status first.</p>}
+          {phase === 'verification_failed' && <p className="text-sm text-subtle">If money left your account, do not pay again. Check the order status first.</p>}
         </div>
       )}
-      <div className="mt-5 flex flex-wrap gap-3">
+      <div className="mt-6 flex flex-wrap gap-3">
         {(phase === 'idle' || phase === 'failed') && (
-          <button className="btn-primary" onClick={() => start(orderId, { email: user?.username })}>{phase === 'failed' ? 'Try payment again' : 'Pay now'}</button>
+          <button className="btn-sun px-7" onClick={() => start(orderId, { email: user?.username })}>{phase === 'failed' ? 'Try payment again' : 'Pay now'}</button>
         )}
         <Link to={`/orders/${orderId}`} className="btn-secondary">View order</Link>
       </div>
