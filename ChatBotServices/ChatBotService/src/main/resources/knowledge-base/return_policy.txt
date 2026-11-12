@@ -1,0 +1,45 @@
+RETURN POLICY
+Business: Example E-Commerce Store
+Document version: 1.0
+Last updated: 12 November 2026
+
+1. PURPOSE
+This policy explains when customers may request a return for products purchased from Example E-Commerce Store.
+
+2. RETURN WINDOW
+Customers may request a return within 10 calendar days from the date the product is delivered. The request must be submitted through the customer's account or by contacting customer support before the return window expires.
+
+3. ELIGIBILITY CONDITIONS
+A product is generally eligible for return when:
+- It is unused and in resalable condition.
+- It is returned with its original packaging, manuals, accessories, and included items.
+- The customer can provide the order number or invoice.
+- The return request is submitted within the return window.
+
+A product may also be eligible for return if it arrives damaged, defective, or materially different from its description. Customers should report visible delivery damage as soon as possible and, where practical, include photographs.
+
+4. NON-RETURNABLE ITEMS
+The following are not eligible for a change-of-mind return:
+- Products damaged by misuse, accident, liquid exposure, or unauthorized repair.
+- Products with missing essential accessories or parts.
+- Products showing substantial use beyond reasonable inspection.
+- Items explicitly marked as non-returnable on their product page.
+
+This restriction does not remove any rights that may apply when a product is defective or incorrectly supplied.
+
+5. HOW TO REQUEST A RETURN
+1. Sign in to the account used to place the order.
+2. Open the relevant order and select the return option, if available.
+3. Select the item and provide the reason for return.
+4. Submit the request and wait for return instructions.
+5. Pack the product securely with its accessories and documentation.
+6. Hand the package to the arranged pickup service or use the return method provided by customer support.
+
+6. INSPECTION AND APPROVAL
+Returned products may be inspected after they reach the return facility. A return is approved only after the product and its included items are checked. If a return is rejected, customer support will explain the reason and the available next steps.
+
+7. IMPORTANT
+Submitting a return request does not mean the return has been approved. Customers should not ship a product to an address that has not been provided by the store.
+
+8. SUPPORT
+For help with a return, contact customer support and provide the order number. Never share passwords, one-time passwords, or full payment-card details.

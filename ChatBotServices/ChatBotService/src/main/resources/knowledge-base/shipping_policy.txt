@@ -1,0 +1,42 @@
+SHIPPING AND DELIVERY POLICY
+Business: Example E-Commerce Store
+Document version: 1.0
+Last updated: 12 November 2026
+
+1. PURPOSE
+This policy describes the general shipping and delivery process for orders placed with Example E-Commerce Store.
+
+2. DELIVERY ESTIMATES
+Standard delivery is generally estimated at 3 to 7 business days after an order is confirmed and prepared for dispatch. This is an estimate, not a guaranteed delivery date.
+
+Delivery may take longer because of the delivery address, courier capacity, public holidays, weather, operational disruptions, or other circumstances outside the store's control.
+
+3. ORDER PROCESSING
+After an order is placed:
+1. The payment and order details are checked.
+2. The order is prepared for dispatch.
+3. The parcel is handed to a delivery partner.
+4. Tracking information is made available when supplied by the delivery partner.
+5. The parcel is delivered to the address provided by the customer.
+
+An order confirmation does not necessarily mean that the parcel has been dispatched.
+
+4. SHIPPING CHARGES
+Any shipping charge applicable to an order is displayed during checkout before the customer confirms payment. Charges may vary by product, delivery address, order value, or delivery option. The chatbot must not invent a shipping fee when the checkout or order system has not supplied one.
+
+5. TRACKING AN ORDER
+Customers can view available tracking information from the order details page. Tracking events may take time to appear after dispatch. If tracking has not updated for an extended period, the customer should contact support with the order number.
+
+6. DELIVERY ADDRESS
+Customers should review the delivery address before placing an order. Address changes may be possible only before the order is handed to the delivery partner. Once dispatch has occurred, an address change may not be possible.
+
+7. DELAYED, LOST, OR DAMAGED SHIPMENTS
+If a shipment appears delayed, customers should first review the latest tracking event. If the parcel is marked delivered but has not been received, or tracking has stopped updating, contact customer support for an investigation.
+
+If a parcel arrives visibly damaged, customers should document the condition with photographs and contact support as soon as possible.
+
+8. DELIVERY AVAILABILITY
+Delivery availability depends on the address and courier service coverage. The chatbot must check the order or delivery system for a specific address or shipment rather than promise service based only on this general policy.
+
+9. SUPPORT
+For delivery assistance, provide the order number through the store's authenticated support channel.

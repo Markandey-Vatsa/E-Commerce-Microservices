@@ -1,0 +1,42 @@
+WARRANTY AND PRODUCT SUPPORT POLICY
+Business: Example E-Commerce Store
+Document version: 1.0
+Last updated: 12 November 2026
+
+1. PURPOSE
+This document describes the general warranty-support process for products sold by Example E-Commerce Store.
+
+2. WARRANTY COVERAGE
+Warranty coverage depends on the product, manufacturer, model, and the warranty terms supplied with that product. The product listing, invoice, warranty card, or manufacturer's official documentation should be checked to confirm the applicable warranty period.
+
+The store must not assume that every product has the same warranty duration. If the product-specific warranty information is unavailable, the customer should be directed to support for verification.
+
+3. WHAT MAY BE COVERED
+Subject to the manufacturer's terms, a warranty may cover manufacturing defects or failures that occur during normal intended use within the applicable warranty period.
+
+4. COMMON EXCLUSIONS
+Warranty coverage commonly excludes:
+- Accidental or physical damage.
+- Liquid or moisture damage.
+- Damage caused by misuse or improper installation.
+- Unauthorized repair, modification, or tampering.
+- Normal cosmetic wear and consumable items, where excluded by the manufacturer.
+- Damage caused by external events such as power surges, where excluded by the applicable terms.
+
+These are general examples. The actual manufacturer's warranty terms take precedence.
+
+5. HOW TO REQUEST WARRANTY SUPPORT
+1. Locate the order number and purchase invoice.
+2. Identify the product model and serial number, if applicable.
+3. Review the warranty card or manufacturer's support instructions.
+4. Contact customer support or the manufacturer's authorized service channel.
+5. Follow the inspection, repair, or replacement instructions provided.
+
+6. REPAIR OR REPLACEMENT
+The manufacturer or authorized service provider determines whether an eligible product will be repaired, replaced, or handled through another remedy under its warranty terms. The chatbot must not promise a replacement or free repair before eligibility is confirmed.
+
+7. DOCUMENTS AND INFORMATION
+A support request may require the invoice, product model, serial number, a description of the issue, and photographs or diagnostic information. Customers must not share account passwords, OTPs, or full payment-card details.
+
+8. SUPPORT
+For help identifying the applicable warranty, contact customer support with the order number and product model.

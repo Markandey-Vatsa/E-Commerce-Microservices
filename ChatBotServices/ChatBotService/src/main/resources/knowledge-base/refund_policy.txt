@@ -1,0 +1,41 @@
+REFUND POLICY
+Business: Example E-Commerce Store
+Document version: 1.0
+Last updated: 12 November 2026
+
+1. PURPOSE
+This policy explains how refunds are initiated and processed for eligible orders placed with Example E-Commerce Store.
+
+2. WHEN A REFUND IS ISSUED
+A refund may be issued when:
+- A returned product has been received and the return has been approved.
+- An order is cancelled before dispatch and the cancellation is accepted.
+- The store confirms that an order cannot be fulfilled.
+- A payment was successfully collected but the corresponding order was not created or fulfilled, after verification.
+
+A refund is not guaranteed merely because a customer submits a request. The request must be reviewed under the applicable return, cancellation, or payment procedure.
+
+3. REFUND METHOD
+Where possible, refunds are sent to the original payment method. If the original method cannot accept the refund, customer support will explain the available alternative process. Customers should not provide their password, PIN, CVV, or one-time password to receive a refund.
+
+4. PROCESSING TIME
+After a refund is approved and initiated by the store, it generally takes 5 to 7 business days for the amount to appear in the customer's account. The actual time may vary depending on the bank, card issuer, payment provider, or payment method.
+
+The 5-to-7-business-day estimate begins after refund initiation, not when the customer first submits a return or refund request.
+
+5. PARTIAL REFUNDS
+If only one item in a multi-item order is returned or cancelled, the refund may apply only to that item and any applicable charges. The final amount is calculated after checking the order details and the applicable terms.
+
+6. FAILED OR DELAYED REFUNDS
+If an approved refund has not appeared after 7 business days:
+1. Check the original payment account or statement.
+2. Check whether the payment provider shows the refund as pending or completed.
+3. Contact customer support with the order number and refund reference, if available.
+
+Support may ask for limited transaction details to investigate. Do not send full card numbers, CVV codes, passwords, or OTPs.
+
+7. REFUND STATUS
+The chatbot can explain the general refund process, but it must not claim that a particular refund has been initiated, completed, or rejected unless that status has been verified through the payment or order system.
+
+8. SUPPORT
+For a refund enquiry, provide the order number through the store's authenticated support channel.

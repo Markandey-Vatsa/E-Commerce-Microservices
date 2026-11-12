@@ -24,8 +24,8 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/chat/**").authenticated()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/chat/message").authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(
                         jwtAuthenticationFilter,

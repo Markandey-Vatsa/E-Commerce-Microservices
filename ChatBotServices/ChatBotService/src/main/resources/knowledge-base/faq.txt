@@ -1,0 +1,40 @@
+FREQUENTLY ASKED QUESTIONS
+Business: Example E-Commerce Store
+Document version: 1.0
+Last updated: 12 November 2026
+
+Q1. How do I place an order?
+Browse the catalogue, open the product page, select the required options, add the product to your cart, and proceed to checkout. Review the delivery address, available delivery options, and final amount before confirming payment.
+
+Q2. How can I track my order?
+Sign in to your account, open your order history, and select the relevant order. Tracking information is shown when it has been supplied by the delivery partner. For live order status, the chatbot should query OrderService or the delivery system.
+
+Q3. Can I cancel my order?
+Cancellation depends on the order's current status. A cancellation request may be possible before dispatch, but it is not guaranteed after the parcel has been handed to the delivery partner. The chatbot must check the current order status through OrderService before confirming whether cancellation is possible.
+
+Q4. How long does delivery take?
+Standard delivery is generally estimated at 3 to 7 business days after order confirmation and preparation for dispatch. This is an estimate. The specific order's tracking information is the best source for its current delivery progress.
+
+Q5. How do I return a product?
+Eligible products may be returned within 10 calendar days of delivery, subject to the Return Policy. Submit a return request through the account or contact customer support. Wait for return instructions before shipping the product.
+
+Q6. When will I receive my refund?
+After a refund is approved and initiated, it generally takes 5 to 7 business days to appear in the original payment account. Bank and payment-provider processing times may vary. For a specific refund status, the chatbot must check PaymentService or direct the customer to support.
+
+Q7. What payment methods are supported?
+The payment methods available for a particular order are displayed during checkout. The chatbot should not promise that a payment method is supported unless the checkout or payment system confirms it.
+
+Q8. Does every product have a warranty?
+Warranty coverage varies by product and manufacturer. Check the product listing, invoice, warranty card, or manufacturer's documentation. Contact support if the applicable warranty terms are unclear.
+
+Q9. What should I do if I receive a damaged product?
+Keep the product and packaging, take clear photographs of the damage, and contact customer support as soon as possible. Provide the order number and follow the instructions given by support.
+
+Q10. How can I contact customer support?
+Use the support option available on the store's website or in the customer's account. Provide the order number when asking about a specific purchase. Never share passwords, OTPs, PINs, or CVV codes.
+
+CHATBOT HANDLING NOTES
+- Use these answers for general informational questions.
+- For a customer's actual order status, cancellation eligibility, payment status, refund status, stock availability, or delivery tracking, call the relevant backend service.
+- Do not invent order-specific facts, prices, delivery dates, policy exceptions, or support contact details.
+- If retrieved information does not answer the question, say that the information is unavailable and direct the customer to support.
